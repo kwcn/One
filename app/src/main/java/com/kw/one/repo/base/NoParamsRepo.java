@@ -11,7 +11,7 @@ public abstract class NoParamsRepo<T> {
     public abstract LiveData<T> getLiveData();
 
     @WorkerThread
-    public abstract T getData();
+    public abstract T getSyncData();
 
     public abstract void reload();
 }

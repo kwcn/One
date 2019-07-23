@@ -15,7 +15,7 @@ public abstract class Repo<R, T> {
 
     // 适用于非ui的数据访问，且是同步访问
     @WorkerThread
-    public abstract T getData(R r);
+    public abstract T getSyncData(R r);
 
     public abstract void reload();
 }

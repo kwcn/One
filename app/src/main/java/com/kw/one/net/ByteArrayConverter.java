@@ -1,5 +1,9 @@
 package com.kw.one.net;
 
+import androidx.annotation.NonNull;
+
+import com.google.gson.Gson;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
@@ -11,11 +15,11 @@ import java.util.Map;
 public class ByteArrayConverter {
     private static final String DEFAULT_PARAMS_ENCODING = "UTF-8";
 
-    public static String ToString(byte[] bytes) {
+    public static String ToString(@NonNull byte[] bytes) {
         return new String(bytes);
     }
 
-    public static byte[] StringTo(String data, String encoding) {
+    public static byte[] StringTo(@NonNull String data, @NonNull String encoding) {
         try {
             return data.getBytes(encoding);
         } catch (UnsupportedEncodingException e) {
@@ -23,11 +27,11 @@ public class ByteArrayConverter {
         }
     }
 
-    public static byte[] MapTo(Map<String, String> params) {
+    public static byte[] MapTo(@NonNull Map<String, String> params) {
         return MapTo(params, DEFAULT_PARAMS_ENCODING);
     }
 
-    public static byte[] MapTo(Map<String, String> params, String encoding) {
+    public static byte[] MapTo(@NonNull Map<String, String> params, @NonNull String encoding) {
         StringBuilder encodedParams = new StringBuilder();
         try {
             for (Map.Entry<String, String> entry : params.entrySet()) {
@@ -40,5 +44,11 @@ public class ByteArrayConverter {
         } catch (UnsupportedEncodingException uee) {
             throw new RuntimeException("Encoding not supported: " + encoding, uee);
         }
+    }
+
+    public static <T> T ToObject(@NonNull byte[] bytes, @NonNull Class<T> t) {
+        String s = ToString(bytes);
+        Gson gson = new Gson();
+        return gson.fromJson(s, t);
     }
 }
