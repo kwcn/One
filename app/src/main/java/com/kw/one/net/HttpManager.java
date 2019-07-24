@@ -4,18 +4,18 @@ package com.kw.one.net;
  * @author Kang Wei
  * @date 2019/7/23
  */
-public class OneHttpManager {
+public class HttpManager {
     public OneHttp mOneHttp;
 
-    private OneHttpManager() {
+    private HttpManager() {
         mOneHttp = new OneHttp.Builder().build();
     }
 
-    public static OneHttpManager getInstance() {
+    public static HttpManager getInstance() {
         return OneHttpManagerHolder.sHolder;
     }
 
     private static class OneHttpManagerHolder {
-        private static OneHttpManager sHolder = new OneHttpManager();
+        private static HttpManager sHolder = new HttpManager();
     }
 }

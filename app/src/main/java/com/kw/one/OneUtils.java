@@ -1,6 +1,8 @@
 package com.kw.one;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -33,4 +35,12 @@ public class OneUtils {
         return (Class) params[index];
     }
 
+    public static <T> LiveData<T> transformSingleObserver(LiveData<T> liveData) {
+        MediatorLiveData<T> liveData1 = new MediatorLiveData<>();
+        liveData1.addSource(liveData, t -> {
+            liveData1.setValue(t);
+            liveData1.removeSource(liveData);
+        });
+        return liveData1;
+    }
 }

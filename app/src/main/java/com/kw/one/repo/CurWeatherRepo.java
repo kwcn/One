@@ -6,8 +6,8 @@ import androidx.lifecycle.ComputableLiveData;
 import androidx.lifecycle.LiveData;
 
 import com.kw.one.net.ByteArrayConverter;
+import com.kw.one.net.HttpManager;
 import com.kw.one.net.OneHttp;
-import com.kw.one.net.OneHttpManager;
 import com.kw.one.net.Request;
 import com.kw.one.net.Response;
 import com.kw.one.repo.base.StableRepo;
@@ -24,7 +24,7 @@ public class CurWeatherRepo extends StableRepo<String, CurWeather> {
     private ComputableLiveData<CurWeather> mLiveData;
 
     public CurWeatherRepo() {
-        mHttp = OneHttpManager.getInstance().mOneHttp;
+        mHttp = HttpManager.getInstance().mOneHttp;
     }
 
     @Override
