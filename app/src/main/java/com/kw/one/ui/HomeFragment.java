@@ -35,6 +35,7 @@ public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBindin
         super.onViewCreated(view, savedInstanceState);
         mBinding.weather.query.setOnClickListener(v -> {
             String city = mBinding.weather.editQuery.getText().toString();
+            // 记录用户搜索历史
             mMapHelper.putValue(CITY_KEY, city);
             mViewModel.setCity(city);
         });
@@ -51,7 +52,7 @@ public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBindin
             mBinding.calendar.setCalendar(calendar);
         });
 
-        // 获取本地存储的城市内容,仅载入一次
+        // 获取本地存储的城市内容,且仅载入一次
         OneUtils.transformSingleObserver(mMapHelper.getLiveValue(CITY_KEY)).observe(this, city -> {
             if (!TextUtils.isEmpty(city)) {
                 mViewModel.setCity(city);
