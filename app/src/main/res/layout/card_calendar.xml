@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="calendar"
+            type="com.kw.one.repo.bean.Calendar" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/date"
+            style="@style/calendar_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text='@{calendar.data==null?@string/current_date(@string/no_data,@string/no_data,@string/no_data):@string/current_date(calendar.data.date,calendar.data.lunarCalendar,calendar.data.yearTips)}'
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/solar_terms"
+            style="@style/calendar_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text='@{calendar.data==null?@string/solar_terms(@string/no_data):@string/solar_terms(calendar.data.solarTerms)}'
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/date" />
+
+
+        <TextView
+            android:id="@+id/avoid"
+            style="@style/calendar_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text='@{calendar.data==null?@string/avoid(@string/no_data):@string/avoid(calendar.data.avoid)}'
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/solar_terms" />
+
+        <TextView
+            android:id="@+id/suit"
+            style="@style/calendar_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text='@{calendar.data==null?@string/suit(@string/no_data):@string/suit(calendar.data.suit)}'
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/avoid" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

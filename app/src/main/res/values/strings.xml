@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">One</string>
+    <string name="weather_content">%1$s: %2$s %3$s</string>
+    <string name="no_find_weather">can\'t find this district</string>
+    <string name="current_date">日期：%1$s %2$s %3$s</string>
+    <string name="solar_terms">节气：%1$s</string>
+    <string name="avoid">禁忌：%1$s</string>
+    <string name="suit">事宜：%1$s</string>
+    <string name="query">查询</string>
+    <string name="no_data">无数据</string>
 </resources>

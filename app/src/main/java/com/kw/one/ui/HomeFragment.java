@@ -33,23 +33,25 @@ public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBindin
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mBinding.confirm.setOnClickListener(v -> {
-            String city = mBinding.editQuery.getText().toString();
+        mBinding.weather.query.setOnClickListener(v -> {
+            String city = mBinding.weather.editQuery.getText().toString();
             mMapHelper.putValue(CITY_KEY, city);
             mViewModel.setCity(city);
         });
-        mBinding.reload.setOnClickListener(v -> mViewModel.reloadWeather());
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel.mCurWeather.observe(this, curWeather -> {
-            String text = curWeather != null && curWeather.data != null ?
-                    curWeather.data.address + ":" + curWeather.data.weather : "null";
-            mBinding.weather.setText(text);
+            mBinding.weather.setWeather(curWeather);
         });
-        // 获取本地存储的内容,仅载入一次
+
+        mViewModel.mCalendar.observe(this, calendar -> {
+            mBinding.calendar.setCalendar(calendar);
+        });
+
+        // 获取本地存储的城市内容,仅载入一次
         OneUtils.transformSingleObserver(mMapHelper.getLiveValue(CITY_KEY)).observe(this, city -> {
             if (!TextUtils.isEmpty(city)) {
                 mViewModel.setCity(city);

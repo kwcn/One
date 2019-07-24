@@ -6,34 +6,12 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/edit_query"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content" />
-
-            <Button
-                android:id="@+id/confirm"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="confirm" />
-        </LinearLayout>
-
-
-        <TextView
+        <include
             android:id="@+id/weather"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="8dp" />
+            layout="@layout/card_weather" />
 
-        <Button
-            android:id="@+id/reload"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="reload" />
+        <include
+            android:id="@+id/calendar"
+            layout="@layout/card_calendar" />
     </LinearLayout>
 </layout>
