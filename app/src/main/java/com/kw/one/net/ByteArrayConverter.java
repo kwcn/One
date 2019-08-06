@@ -6,6 +6,8 @@ import com.google.gson.Gson;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
@@ -13,34 +15,32 @@ import java.util.Map;
  * @date 2019/7/20
  */
 public class ByteArrayConverter {
-    private static final String DEFAULT_PARAMS_ENCODING = "UTF-8";
-
     public static String ToString(@NonNull byte[] bytes) {
-        return new String(bytes);
+        return ToString(bytes, StandardCharsets.UTF_8);
     }
 
-    public static byte[] StringTo(@NonNull String data, @NonNull String encoding) {
-        try {
-            return data.getBytes(encoding);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("Encoding not supported: " + encoding, e);
-        }
+    public static String ToString(@NonNull byte[] bytes, @NonNull Charset encoding) {
+        return new String(bytes, encoding);
+    }
+
+    public static byte[] StringTo(@NonNull String data, @NonNull Charset encoding) {
+        return data.getBytes(encoding);
     }
 
     public static byte[] MapTo(@NonNull Map<String, String> params) {
-        return MapTo(params, DEFAULT_PARAMS_ENCODING);
+        return MapTo(params, StandardCharsets.UTF_8);
     }
 
-    public static byte[] MapTo(@NonNull Map<String, String> params, @NonNull String encoding) {
+    public static byte[] MapTo(@NonNull Map<String, String> params, @NonNull Charset encoding) {
         StringBuilder encodedParams = new StringBuilder();
         try {
             for (Map.Entry<String, String> entry : params.entrySet()) {
-                encodedParams.append(URLEncoder.encode(entry.getKey(), encoding));
+                encodedParams.append(URLEncoder.encode(entry.getKey(), String.valueOf(encoding)));
                 encodedParams.append('=');
-                encodedParams.append(URLEncoder.encode(entry.getValue(), encoding));
+                encodedParams.append(URLEncoder.encode(entry.getValue(), String.valueOf(encoding)));
                 encodedParams.append('&');
             }
-            return encodedParams.toString().getBytes(encoding);
+            return StringTo(encodedParams.toString(), encoding);
         } catch (UnsupportedEncodingException uee) {
             throw new RuntimeException("Encoding not supported: " + encoding, uee);
         }

@@ -38,8 +38,8 @@ public class CalendarRepo extends NoParamsRepo<Calendar> {
     @Override
     public Calendar getSyncData() {
         String curDate = new SimpleDateFormat("yyyyMMdd").format(new Date(System.currentTimeMillis()));
-        Response response = HttpManager.getInstance().mOneHttp.SyncRequest(
-                new Request(Request.GET, BASE_URL + curDate));
+        Request request = new Request.Builder().setUrl(BASE_URL + curDate).setMethod(Request.GET).build();
+        Response response = HttpManager.getInstance().mOneHttp.SyncRequest(request);
         if (response.mStatus == Response.ERROR) {
             return null;
         }

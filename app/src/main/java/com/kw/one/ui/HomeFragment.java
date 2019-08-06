@@ -13,6 +13,7 @@ import com.kw.one.OneUtils;
 import com.kw.one.R;
 import com.kw.one.databinding.FragmentHomeBinding;
 import com.kw.one.db.DiskMapHelper;
+import com.kw.one.repo.bean.Bus;
 import com.kw.one.viewmodel.HomeViewModel;
 
 import static com.kw.one.db.DiskMapHelper.CITY_KEY;
@@ -39,18 +40,22 @@ public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBindin
             mMapHelper.putValue(CITY_KEY, city);
             mViewModel.setCity(city);
         });
+
+        mBinding.bus.refresh1.setOnClickListener(v -> mViewModel.reloadBus());
+
+        mBinding.bus.refresh2.setOnClickListener(v -> mViewModel.reloadBus2());
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel.mCurWeather.observe(this, curWeather -> {
-            mBinding.weather.setWeather(curWeather);
-        });
+        mViewModel.mCurWeather.observe(this, mBinding.weather::setWeather);
 
-        mViewModel.mCalendar.observe(this, calendar -> {
-            mBinding.calendar.setCalendar(calendar);
-        });
+        mViewModel.mCalendar.observe(this, mBinding.calendar::setCalendar);
+
+        mViewModel.mBus.observe(this, bus -> mBinding.bus.bus1.setText(HomeFragment.this.getBusTime(R.string.bus_1, bus)));
+
+        mViewModel.mBus2.observe(this, bus -> mBinding.bus.bus2.setText(HomeFragment.this.getBusTime(R.string.bus_2, bus)));
 
         // 获取本地存储的城市内容,且仅载入一次
         OneUtils.transformSingleObserver(mMapHelper.getLiveValue(CITY_KEY)).observe(this, city -> {
@@ -58,6 +63,24 @@ public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBindin
                 mViewModel.setCity(city);
             }
         });
+    }
+
+    @NonNull
+    private String getBusTime(int stringId, Bus bus) {
+        String time;
+        String remainTime = "";
+        try {
+            time = bus.jsonr.data.buses.get(0).travels.get(0).recommTip;
+            long travelTime = bus.jsonr.data.buses.get(0).travels.get(0).travelTime;
+            remainTime = "Re:" + travelTime / 60 + "分钟";
+        } catch (Exception e) {
+            try {
+                time = bus.jsonr.data.depDesc;
+            } catch (Exception e1) {
+                time = getString(R.string.no_data);
+            }
+        }
+        return getString(stringId, time, remainTime);
     }
 
     @Override
@@ -70,4 +93,5 @@ public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBindin
     protected HomeViewModel getViewModel() {
         return ViewModelProviders.of(this).get(HomeViewModel.class);
     }
+
 }

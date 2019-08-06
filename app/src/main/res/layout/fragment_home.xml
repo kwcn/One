@@ -13,5 +13,9 @@
         <include
             android:id="@+id/calendar"
             layout="@layout/card_calendar" />
+
+        <include
+            android:id="@+id/bus"
+            layout="@layout/card_bus" />
     </LinearLayout>
 </layout>

@@ -34,8 +34,8 @@ public class CurWeatherRepo extends StableRepo<String, CurWeather> {
 
     @Override
     public CurWeather getSyncData(String city) {
-        Response response = HttpManager.getInstance().mOneHttp.SyncRequest(
-                new Request(Request.GET, BASE_URL + city));
+        Request request = new Request.Builder().setUrl(BASE_URL + city).setMethod(Request.GET).build();
+        Response response = HttpManager.getInstance().mOneHttp.SyncRequest(request);
         if (response.mStatus == Response.ERROR) {
             return null;
         }

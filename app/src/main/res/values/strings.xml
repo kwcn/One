@@ -8,4 +8,7 @@
     <string name="suit">事宜：%1$s</string>
     <string name="query">查询</string>
     <string name="no_data">无数据</string>
+    <string name="bus_1">125外环 到达和顺家园时间：%1$s %2$s</string>
+    <string name="bus_2">125内环 到长城汽车公寓时间：%1$s %2$s</string>
+    <string name="refresh">刷新</string>
 </resources>
