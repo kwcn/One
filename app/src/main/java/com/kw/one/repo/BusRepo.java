@@ -1,42 +1,30 @@
 package com.kw.one.repo;
 
-import android.annotation.SuppressLint;
+import android.text.TextUtils;
 import android.util.ArrayMap;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ComputableLiveData;
-import androidx.lifecycle.LiveData;
 
 import com.kw.one.net.ByteArrayConverter;
 import com.kw.one.net.HttpManager;
 import com.kw.one.net.Request;
 import com.kw.one.net.Response;
-import com.kw.one.repo.base.StableRepo;
+import com.kw.one.repo.base.Repo;
 import com.kw.one.repo.bean.Bus;
 
 import java.util.Map;
 
 /**
  * @author Kang Wei
- * @date 2019/8/6
+ * @date 2019/8/8
  */
-@SuppressLint("RestrictedApi")
-public class BusRepo extends StableRepo<String, Bus> {
-    private ComputableLiveData<Bus> mLiveData;
-
+public class BusRepo extends Repo<String, Bus> {
     @Override
-    public LiveData<Bus> getLiveData(String url) {
-        mLiveData = new ComputableLiveData<Bus>() {
-            @Override
-            protected Bus compute() {
-                return getSyncData(url);
-            }
-        };
-        return mLiveData.getLiveData();
-    }
-
-    @Override
-    public Bus getSyncData(String url) {
+    protected Bus getSyncData(@Nullable String url) {
+        if (TextUtils.isEmpty(url)) {
+            return null;
+        }
         Request request = new Request.Builder().setUrl(url).setMethod(Request.GET).setHeader(getDefaultHeader()).build();
         Response response = HttpManager.getInstance().mOneHttp.SyncRequest(request);
         if (response.mStatus == Response.ERROR) {
@@ -47,6 +35,16 @@ public class BusRepo extends StableRepo<String, Bus> {
             return null;
         }
         return ByteArrayConverter.ToObject(newBytes, Bus.class);
+    }
+
+    @Override
+    protected ComputableLiveData<Bus> getAsyncData(@Nullable String url) {
+        return new ComputableLiveData<Bus>() {
+            @Override
+            protected Bus compute() {
+                return getSyncData(url);
+            }
+        };
     }
 
     /**
@@ -63,14 +61,6 @@ public class BusRepo extends StableRepo<String, Bus> {
         byte[] newBytes = new byte[data.length - 12];
         System.arraycopy(data, 6, newBytes, 0, data.length - 12);
         return newBytes;
-    }
-
-
-    @Override
-    public void reload() {
-        if (mLiveData != null) {
-            mLiveData.invalidate();
-        }
     }
 
     public Map<String, String> getDefaultHeader() {

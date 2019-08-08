@@ -38,29 +38,31 @@ public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBindin
             String city = mBinding.weather.editQuery.getText().toString();
             // 记录用户搜索历史
             mMapHelper.putValue(CITY_KEY, city);
-            mViewModel.setCity(city);
+            mViewModel.mWeatherProvider.setParam(city);
         });
 
-        mBinding.bus.refresh1.setOnClickListener(v -> mViewModel.reloadBus());
+        mBinding.bus.refresh1.setOnClickListener(v -> mViewModel.mBusProvider.reload());
 
-        mBinding.bus.refresh2.setOnClickListener(v -> mViewModel.reloadBus2());
+        mBinding.bus.refresh2.setOnClickListener(v -> mViewModel.mBusProvider2.reload());
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel.mCurWeather.observe(this, mBinding.weather::setWeather);
+        mViewModel.mWeatherProvider.getAsyncData().observe(this, mBinding.weather::setWeather);
 
-        mViewModel.mCalendar.observe(this, mBinding.calendar::setCalendar);
+        mViewModel.mCalendarProvider.getAsyncData().observe(this, mBinding.calendar::setCalendar);
 
-        mViewModel.mBus.observe(this, bus -> mBinding.bus.bus1.setText(HomeFragment.this.getBusTime(R.string.bus_1, bus)));
+        mViewModel.mBusProvider.getAsyncData().observe(this, bus ->
+                mBinding.bus.bus1.setText(HomeFragment.this.getBusTime(R.string.bus_1, bus)));
 
-        mViewModel.mBus2.observe(this, bus -> mBinding.bus.bus2.setText(HomeFragment.this.getBusTime(R.string.bus_2, bus)));
+        mViewModel.mBusProvider2.getAsyncData().observe(this, bus ->
+                mBinding.bus.bus2.setText(HomeFragment.this.getBusTime(R.string.bus_2, bus)));
 
         // 获取本地存储的城市内容,且仅载入一次
         OneUtils.transformSingleObserver(mMapHelper.getLiveValue(CITY_KEY)).observe(this, city -> {
             if (!TextUtils.isEmpty(city)) {
-                mViewModel.setCity(city);
+                mViewModel.mWeatherProvider.setParam(city);
             }
         });
     }
@@ -79,6 +81,9 @@ public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBindin
             } catch (Exception e1) {
                 time = getString(R.string.no_data);
             }
+        }
+        if (TextUtils.isEmpty(time)) {
+            time = getString(R.string.no_data);
         }
         return getString(stringId, time, remainTime);
     }

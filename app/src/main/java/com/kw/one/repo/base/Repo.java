@@ -1,21 +1,22 @@
 package com.kw.one.repo.base;
 
-import androidx.annotation.WorkerThread;
-import androidx.lifecycle.LiveData;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ComputableLiveData;
 
 /**
- * 数据模型
- *
  * @author Kang Wei
- * @date 2019/7/23
+ * @date 2019/8/8
  */
-public abstract class Repo<R, T> {
-    // 适用于ui controller的异步数据
-    public abstract LiveData<T> getLiveData(R r);
+public abstract class Repo<P, T> {
+    protected abstract T getSyncData(@Nullable P p);
 
-    // 适用于非ui的数据访问，且是同步访问
-    @WorkerThread
-    public abstract T getSyncData(R r);
+    protected abstract ComputableLiveData<T> getAsyncData(@Nullable P p);
 
-    public abstract void reload();
+    public Provider<P, T> getProvider(P param) {
+        return new Provider<>(this, param);
+    }
+
+    public MutableProvider<P, T> getMutableProvider() {
+        return new MutableProvider<>(this);
+    }
 }

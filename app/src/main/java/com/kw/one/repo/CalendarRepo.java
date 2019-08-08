@@ -2,14 +2,14 @@ package com.kw.one.repo;
 
 import android.annotation.SuppressLint;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.ComputableLiveData;
-import androidx.lifecycle.LiveData;
 
 import com.kw.one.net.ByteArrayConverter;
 import com.kw.one.net.HttpManager;
 import com.kw.one.net.Request;
 import com.kw.one.net.Response;
-import com.kw.one.repo.base.NoParamsRepo;
+import com.kw.one.repo.base.Repo;
 import com.kw.one.repo.bean.Calendar;
 
 import java.text.SimpleDateFormat;
@@ -20,23 +20,10 @@ import java.util.Date;
  * @date 2019/7/24
  */
 @SuppressLint("RestrictedApi")
-public class CalendarRepo extends NoParamsRepo<Calendar> {
+public class CalendarRepo extends Repo<Void, Calendar> {
     private static final String BASE_URL = "http://www.mxnzp.com/api/holiday/single/";
-    private ComputableLiveData<Calendar> mLiveData;
-
     @Override
-    public LiveData<Calendar> getLiveData() {
-        mLiveData = new ComputableLiveData<Calendar>() {
-            @Override
-            protected Calendar compute() {
-                return getSyncData();
-            }
-        };
-        return mLiveData.getLiveData();
-    }
-
-    @Override
-    public Calendar getSyncData() {
+    protected Calendar getSyncData(@Nullable Void aVoid) {
         String curDate = new SimpleDateFormat("yyyyMMdd").format(new Date(System.currentTimeMillis()));
         Request request = new Request.Builder().setUrl(BASE_URL + curDate).setMethod(Request.GET).build();
         Response response = HttpManager.getInstance().mOneHttp.SyncRequest(request);
@@ -47,9 +34,12 @@ public class CalendarRepo extends NoParamsRepo<Calendar> {
     }
 
     @Override
-    public void reload() {
-        if (mLiveData != null) {
-            mLiveData.invalidate();
-        }
+    protected ComputableLiveData<Calendar> getAsyncData(@Nullable Void aVoid) {
+        return new ComputableLiveData<Calendar>() {
+            @Override
+            protected Calendar compute() {
+                return getSyncData(aVoid);
+            }
+        };
     }
 }
