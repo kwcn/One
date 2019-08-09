@@ -20,7 +20,7 @@ public class Provider<P, T> implements IProvider<T> {
     }
 
     @Override
-    public LiveData<T> getAsyncData() {
+    public LiveData<T> getLiveData() {
         if (mLiveData == null) {
             mLiveData = mRepo.getAsyncData(mParam);
         }
@@ -28,7 +28,7 @@ public class Provider<P, T> implements IProvider<T> {
     }
 
     @Override
-    public T getSyncData() {
+    public T getData() {
         return mRepo.getSyncData(mParam);
     }
 

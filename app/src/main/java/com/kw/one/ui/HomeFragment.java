@@ -13,8 +13,11 @@ import com.kw.one.OneUtils;
 import com.kw.one.R;
 import com.kw.one.databinding.FragmentHomeBinding;
 import com.kw.one.db.DiskMapHelper;
+import com.kw.one.repo.BusRepo;
 import com.kw.one.repo.bean.Bus;
 import com.kw.one.viewmodel.HomeViewModel;
+
+import java.util.Calendar;
 
 import static com.kw.one.db.DiskMapHelper.CITY_KEY;
 
@@ -41,23 +44,20 @@ public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBindin
             mViewModel.mWeatherProvider.setParam(city);
         });
 
-        mBinding.bus.refresh1.setOnClickListener(v -> mViewModel.mBusProvider.reload());
-
-        mBinding.bus.refresh2.setOnClickListener(v -> mViewModel.mBusProvider2.reload());
+        mBinding.bus.refresh.setOnClickListener(v -> mViewModel.mBusProvider.reload());
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel.mWeatherProvider.getAsyncData().observe(this, mBinding.weather::setWeather);
+        mViewModel.mWeatherProvider.getLiveData().observe(this, mBinding.weather::setWeather);
 
-        mViewModel.mCalendarProvider.getAsyncData().observe(this, mBinding.calendar::setCalendar);
+        mViewModel.mCalendarProvider.getLiveData().observe(this, mBinding.calendar::setCalendar);
 
-        mViewModel.mBusProvider.getAsyncData().observe(this, bus ->
-                mBinding.bus.bus1.setText(HomeFragment.this.getBusTime(R.string.bus_1, bus)));
+        mViewModel.mBusProvider.getLiveData().observe(this, bus ->
+                mBinding.bus.bus.setText(HomeFragment.this.getBusTime(bus)));
 
-        mViewModel.mBusProvider2.getAsyncData().observe(this, bus ->
-                mBinding.bus.bus2.setText(HomeFragment.this.getBusTime(R.string.bus_2, bus)));
+        mViewModel.mBusProvider.setParam(isBus1Time() ? BusRepo.bus_125_0_url : BusRepo.bus_125_1_url);
 
         // 获取本地存储的城市内容,且仅载入一次
         OneUtils.transformSingleObserver(mMapHelper.getLiveValue(CITY_KEY)).observe(this, city -> {
@@ -67,8 +67,19 @@ public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBindin
         });
     }
 
+    @Override
+    protected int getLayoutId() {
+        return R.layout.fragment_home;
+    }
+
+    @Nullable
+    @Override
+    protected HomeViewModel getViewModel() {
+        return ViewModelProviders.of(this).get(HomeViewModel.class);
+    }
+
     @NonNull
-    private String getBusTime(int stringId, Bus bus) {
+    private String getBusTime(Bus bus) {
         String time;
         String remainTime = "";
         try {
@@ -84,19 +95,14 @@ public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBindin
         }
         if (TextUtils.isEmpty(time)) {
             time = getString(R.string.no_data);
+            remainTime = "";
         }
-        return getString(stringId, time, remainTime);
+        return getString(isBus1Time() ? R.string.bus_1 : R.string.bus_2, time, remainTime);
     }
 
-    @Override
-    protected int getLayoutId() {
-        return R.layout.fragment_home;
+    private boolean isBus1Time() {
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR);
+        return hour > 0 && hour < 12;
     }
-
-    @Nullable
-    @Override
-    protected HomeViewModel getViewModel() {
-        return ViewModelProviders.of(this).get(HomeViewModel.class);
-    }
-
 }

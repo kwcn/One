@@ -8,7 +8,7 @@
         android:layout_marginVertical="16dp">
 
         <TextView
-            android:id="@+id/bus1"
+            android:id="@+id/bus"
             style="@style/bus_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -16,29 +16,12 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/refresh1"
+            android:id="@+id/refresh"
             style="@style/bus_refresh_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/refresh"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/bus2"
-            style="@style/bus_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/bus1" />
-
-        <TextView
-            android:id="@+id/refresh2"
-            style="@style/bus_refresh_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/refresh"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/bus1" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

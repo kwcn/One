@@ -4,7 +4,6 @@ import android.text.TextUtils;
 import android.util.ArrayMap;
 
 import androidx.annotation.Nullable;
-import androidx.lifecycle.ComputableLiveData;
 
 import com.kw.one.net.ByteArrayConverter;
 import com.kw.one.net.HttpManager;
@@ -20,6 +19,11 @@ import java.util.Map;
  * @date 2019/8/8
  */
 public class BusRepo extends Repo<String, Bus> {
+    // 125外环
+    public static final String bus_125_0_url = "https://web.chelaile.net.cn/api/bus/line!lineDetail.action?s=h5&wxs=wx_app&src=weixinapp_cx&sign=1&v=3.8.56&from=NO_FROM&cityId=006&geo_lat=39.0765&lat=39.0765&geo_lng=117.501028&lng=117.501028&gpstype=wgs&unionId=oSpTTjrSAzc75fSNjRzqkEVeSs8g&userId=okBHq0I1Ltr9YREGmI5rdTD5GESk&h5Id=okBHq0I1Ltr9YREGmI5rdTD5GESk&targetOrder=7&lineId=022-125-0";
+    // 125内环
+    public static final String bus_125_1_url = "https://web.chelaile.net.cn/api/bus/line!lineDetail.action?s=h5&wxs=wx_app&src=weixinapp_cx&sign=1&v=3.8.56&from=NO_FROM&cityId=006&geo_lat=39.076469&lat=39.076469&geo_lng=117.501043&lng=117.501043&gpstype=wgs&unionId=oSpTTjrSAzc75fSNjRzqkEVeSs8g&userId=okBHq0I1Ltr9YREGmI5rdTD5GESk&h5Id=okBHq0I1Ltr9YREGmI5rdTD5GESk&targetOrder=8&lineId=002247655200";
+
     @Override
     protected Bus getSyncData(@Nullable String url) {
         if (TextUtils.isEmpty(url)) {
@@ -35,16 +39,6 @@ public class BusRepo extends Repo<String, Bus> {
             return null;
         }
         return ByteArrayConverter.ToObject(newBytes, Bus.class);
-    }
-
-    @Override
-    protected ComputableLiveData<Bus> getAsyncData(@Nullable String url) {
-        return new ComputableLiveData<Bus>() {
-            @Override
-            protected Bus compute() {
-                return getSyncData(url);
-            }
-        };
     }
 
     /**

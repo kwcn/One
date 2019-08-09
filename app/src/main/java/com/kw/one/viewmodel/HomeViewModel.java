@@ -21,14 +21,11 @@ public class HomeViewModel extends ViewModel {
     // 日历数据
     public Provider<Void, Calendar> mCalendarProvider;
     // 公交车数据
-    public Provider<String, Bus> mBusProvider;
-    public Provider<String, Bus> mBusProvider2;
+    public MutableProvider<String, Bus> mBusProvider;
 
     public HomeViewModel() {
         mWeatherProvider = new CurWeatherRepo().getMutableProvider();
         mCalendarProvider = new CalendarRepo().getProvider(null);
-        BusRepo busRepo = new BusRepo();
-        mBusProvider = busRepo.getProvider("https://web.chelaile.net.cn/api/bus/line!lineDetail.action?s=h5&wxs=wx_app&src=weixinapp_cx&sign=1&v=3.8.56&from=NO_FROM&cityId=006&geo_lat=39.0765&lat=39.0765&geo_lng=117.501028&lng=117.501028&gpstype=wgs&unionId=oSpTTjrSAzc75fSNjRzqkEVeSs8g&userId=okBHq0I1Ltr9YREGmI5rdTD5GESk&h5Id=okBHq0I1Ltr9YREGmI5rdTD5GESk&targetOrder=7&lineId=022-125-0");
-        mBusProvider2 = busRepo.getProvider("https://web.chelaile.net.cn/api/bus/line!lineDetail.action?s=h5&wxs=wx_app&src=weixinapp_cx&sign=1&v=3.8.56&from=NO_FROM&cityId=006&geo_lat=39.076469&lat=39.076469&geo_lng=117.501043&lng=117.501043&gpstype=wgs&unionId=oSpTTjrSAzc75fSNjRzqkEVeSs8g&userId=okBHq0I1Ltr9YREGmI5rdTD5GESk&h5Id=okBHq0I1Ltr9YREGmI5rdTD5GESk&targetOrder=8&lineId=002247655200");
+        mBusProvider = new BusRepo().getMutableProvider();
     }
 }

@@ -3,7 +3,6 @@ package com.kw.one.repo;
 import android.annotation.SuppressLint;
 
 import androidx.annotation.Nullable;
-import androidx.lifecycle.ComputableLiveData;
 
 import com.kw.one.net.ByteArrayConverter;
 import com.kw.one.net.HttpManager;
@@ -28,15 +27,5 @@ public class CurWeatherRepo extends Repo<String, CurWeather> {
             return null;
         }
         return ByteArrayConverter.ToObject(response.mData, CurWeather.class);
-    }
-
-    @Override
-    protected ComputableLiveData<CurWeather> getAsyncData(@Nullable String city) {
-        return new ComputableLiveData<CurWeather>() {
-            @Override
-            protected CurWeather compute() {
-                return getSyncData(city);
-            }
-        };
     }
 }

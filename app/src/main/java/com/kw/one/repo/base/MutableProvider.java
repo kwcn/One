@@ -21,7 +21,7 @@ public class MutableProvider<P, T> implements IProvider<T> {
     }
 
     @Override
-    public LiveData<T> getAsyncData() {
+    public LiveData<T> getLiveData() {
         if (mLiveData == null) {
             mLiveData = Transformations.switchMap(mParam, p -> {
                 mComputableLiveData = mRepo.getAsyncData(p);
@@ -32,7 +32,7 @@ public class MutableProvider<P, T> implements IProvider<T> {
     }
 
     @Override
-    public T getSyncData() {
+    public T getData() {
         return mRepo.getSyncData(mParam.getValue());
     }
 

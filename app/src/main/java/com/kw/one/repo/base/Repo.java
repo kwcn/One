@@ -10,7 +10,14 @@ import androidx.lifecycle.ComputableLiveData;
 public abstract class Repo<P, T> {
     protected abstract T getSyncData(@Nullable P p);
 
-    protected abstract ComputableLiveData<T> getAsyncData(@Nullable P p);
+    protected ComputableLiveData<T> getAsyncData(@Nullable P p) {
+        return new ComputableLiveData<T>() {
+            @Override
+            protected T compute() {
+                return getSyncData(p);
+            }
+        };
+    }
 
     public Provider<P, T> getProvider(P param) {
         return new Provider<>(this, param);

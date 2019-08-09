@@ -3,7 +3,6 @@ package com.kw.one.repo;
 import android.annotation.SuppressLint;
 
 import androidx.annotation.Nullable;
-import androidx.lifecycle.ComputableLiveData;
 
 import com.kw.one.net.ByteArrayConverter;
 import com.kw.one.net.HttpManager;
@@ -31,15 +30,5 @@ public class CalendarRepo extends Repo<Void, Calendar> {
             return null;
         }
         return ByteArrayConverter.ToObject(response.mData, Calendar.class);
-    }
-
-    @Override
-    protected ComputableLiveData<Calendar> getAsyncData(@Nullable Void aVoid) {
-        return new ComputableLiveData<Calendar>() {
-            @Override
-            protected Calendar compute() {
-                return getSyncData(aVoid);
-            }
-        };
     }
 }
