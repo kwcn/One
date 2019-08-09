@@ -2,6 +2,7 @@ package com.kw.one.db;
 
 import android.content.Context;
 import android.util.ArrayMap;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
@@ -52,6 +53,10 @@ public class DiskMapHelper {
         if (liveData == null) {
             liveData = mMapDao.getValue(key);
             mCache.put(key, liveData);
+            // 当liveData没有observe时，mCache里的liveData不会更新值，这里设置一个默认的observe
+            liveData.observeForever(s -> {
+                Log.d(DiskMapHelper.class.getSimpleName(), "getLiveValue: key:" + key + " value:" + s);
+            });
         }
         return liveData;
     }
