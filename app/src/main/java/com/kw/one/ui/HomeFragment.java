@@ -102,7 +102,7 @@ public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBindin
 
     private boolean isBus1Time() {
         Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
         return hour > 0 && hour < 12;
     }
 }

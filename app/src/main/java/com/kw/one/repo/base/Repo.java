@@ -4,6 +4,8 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ComputableLiveData;
 
 /**
+ * 一个仓库能提供多个数据provider
+ *
  * @author Kang Wei
  * @date 2019/8/8
  */
