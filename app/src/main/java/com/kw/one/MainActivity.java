@@ -5,7 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModel;
 
-import com.kw.one.ui.BaseActivity;
+import com.kw.one.ui.base.BaseActivity;
 
 public class MainActivity extends BaseActivity {
 

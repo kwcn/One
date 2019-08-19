@@ -15,6 +15,7 @@ import com.kw.one.databinding.FragmentHomeBinding;
 import com.kw.one.db.DiskMapHelper;
 import com.kw.one.repo.BusRepo;
 import com.kw.one.repo.bean.Bus;
+import com.kw.one.ui.base.BaseFragment;
 import com.kw.one.viewmodel.HomeViewModel;
 
 import java.util.Calendar;
@@ -44,20 +45,34 @@ public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBindin
             mViewModel.mWeatherProvider.setParam(city);
         });
 
-        mBinding.bus.refresh.setOnClickListener(v -> mViewModel.mBusProvider.reload());
+        setRefresh(3, () -> {
+            mViewModel.mBusProvider.reload();
+            mViewModel.mCalendarProvider.reload();
+            mViewModel.mWeatherProvider.reload();
+        });
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel.mWeatherProvider.getLiveData().observe(this, mBinding.weather::setWeather);
+        mViewModel.mWeatherProvider.getLiveData().observe(this, weather -> {
+            mBinding.weather.setWeather(weather);
+            // 无论是否返回有效数据，都应该结束刷新
+            cutRefreshTask();
+        });
 
-        mViewModel.mCalendarProvider.getLiveData().observe(this, mBinding.calendar::setCalendar);
+        mViewModel.mCalendarProvider.getLiveData().observe(this, calendar -> {
+            mBinding.calendar.setCalendar(calendar);
+            cutRefreshTask();
+        });
 
-        mViewModel.mBusProvider.getLiveData().observe(this, bus ->
-                mBinding.bus.bus.setText(HomeFragment.this.getBusTime(bus)));
+        mViewModel.mBusProvider.getLiveData().observe(this, bus -> {
+            mBinding.bus.bus.setText(HomeFragment.this.getBusTime(bus));
+            cutRefreshTask();
+        });
 
-        mViewModel.mBusProvider.setParam(isBus1Time() ? BusRepo.bus_125_0_url : BusRepo.bus_125_1_url);
+        mViewModel.mBusProvider.setParam(isBus1Time() ? BusRepo.bus_125_0_url :
+                BusRepo.bus_125_1_url);
 
         // 获取本地存储的城市内容,且仅载入一次
         OneUtils.transformSingleObserver(mMapHelper.getLiveValue(CITY_KEY)).observe(this, city -> {

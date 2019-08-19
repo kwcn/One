@@ -1,4 +1,4 @@
-package com.kw.one.ui;
+package com.kw.one.ui.base;
 
 import android.os.Bundle;
 

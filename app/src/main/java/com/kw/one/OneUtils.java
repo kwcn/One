@@ -1,5 +1,9 @@
 package com.kw.one;
 
+import android.os.Handler;
+import android.os.Looper;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
@@ -19,8 +23,7 @@ public class OneUtils {
      * @param index 返回某下标的类型
      */
     @Nullable
-    public static Class getSuperClassGenericType(Class clazz, int index)
-            throws IndexOutOfBoundsException {
+    public static Class getSuperClassGenericType(Class clazz, int index) throws IndexOutOfBoundsException {
         Type genType = clazz.getGenericSuperclass();
         if (!(genType instanceof ParameterizedType)) {
             return null;
@@ -42,5 +45,13 @@ public class OneUtils {
             liveData1.removeSource(liveData);
         });
         return liveData1;
+    }
+
+    public static void runOnUiThread(@NonNull Runnable runnable) {
+        if (Thread.currentThread() == Looper.getMainLooper().getThread()) {
+            runnable.run();
+        } else {
+            new Handler(Looper.getMainLooper()).post(runnable);
+        }
     }
 }
