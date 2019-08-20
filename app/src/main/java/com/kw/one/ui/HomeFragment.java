@@ -27,12 +27,15 @@ import static com.kw.one.db.DiskMapHelper.CITY_KEY;
  * @date 2019/7/23
  */
 public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBinding> {
+    public static final int TASK_COUNT = 3;
     private DiskMapHelper mMapHelper;
+    private int mFirstLoadTaskCount;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mMapHelper = DiskMapHelper.getInstance(context);
+        mFirstLoadTaskCount = TASK_COUNT;
     }
 
     @Override
@@ -45,7 +48,7 @@ public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBindin
             mViewModel.mWeatherProvider.setParam(city);
         });
 
-        setRefresh(3, () -> {
+        setRefresh(TASK_COUNT, () -> {
             mViewModel.mBusProvider.reload(bus -> cutRefreshTask());
             mViewModel.mCalendarProvider.reload(calendar -> cutRefreshTask());
             mViewModel.mWeatherProvider.reload(curWeather -> cutRefreshTask());
@@ -55,14 +58,21 @@ public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBindin
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel.mWeatherProvider.getLiveData().observe(this,
-                weather -> mBinding.weather.setWeather(weather));
+        mViewModel.mWeatherProvider.getLiveData().observe(this, weather -> {
+            mBinding.weather.setWeather(weather);
+            // 用于控制第一次进入时进度条的显示
+            cutFirstRefreshTask();
+        });
 
-        mViewModel.mCalendarProvider.getLiveData().observe(this,
-                calendar -> mBinding.calendar.setCalendar(calendar));
+        mViewModel.mCalendarProvider.getLiveData().observe(this, calendar -> {
+            mBinding.calendar.setCalendar(calendar);
+            cutFirstRefreshTask();
+        });
 
-        mViewModel.mBusProvider.getLiveData().observe(this,
-                bus -> mBinding.bus.bus.setText(HomeFragment.this.getBusTime(bus)));
+        mViewModel.mBusProvider.getLiveData().observe(this, bus -> {
+            mBinding.bus.bus.setText(HomeFragment.this.getBusTime(bus));
+            cutFirstRefreshTask();
+        });
 
         mViewModel.mBusProvider.setParam(isBus1Time() ? BusRepo.bus_125_0_url :
                 BusRepo.bus_125_1_url);
@@ -112,5 +122,12 @@ public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBindin
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         return hour > 0 && hour < 12;
+    }
+
+    private void cutFirstRefreshTask() {
+        if (mFirstLoadTaskCount > 0) {
+            cutRefreshTask();
+            mFirstLoadTaskCount--;
+        }
     }
 }

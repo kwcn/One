@@ -43,6 +43,7 @@ public class MutableProvider<P, T> implements IProvider<T> {
         });
     }
 
+    // 设置参数会触发数据回调
     @AnyThread
     public void setParam(P param) {
         mParam.postValue(param);

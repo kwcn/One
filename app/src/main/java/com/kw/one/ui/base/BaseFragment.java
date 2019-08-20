@@ -52,6 +52,8 @@ public abstract class BaseFragment<VM extends ViewModel, Binding extends ViewDat
     protected void setRefresh(int taskCount, @NonNull Runnable refresh) {
         if (taskCount > 0) {
             mRefreshWorker = new RefreshWorker(mRefreshLayout, taskCount, refresh);
+            // 第一次配置时，显示刷新进度条
+            mRefreshLayout.setRefreshing(true);
         } else {
             mRefreshLayout.setEnabled(false);
         }

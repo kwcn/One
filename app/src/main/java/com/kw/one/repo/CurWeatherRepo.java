@@ -28,7 +28,7 @@ public class CurWeatherRepo extends Repo<String, CurWeather> {
         }
         Request request = new Request.Builder().setUrl(BASE_URL + city).setMethod(Request.GET).build();
         Response response = HttpManager.getInstance().mOneHttp.SyncRequest(request);
-        if (response.mStatus == Response.ERROR) {
+        if (response.mStatus == Response.ERROR || response.mData == null) {
             return null;
         }
         return ByteArrayConverter.ToObject(response.mData, CurWeather.class);
@@ -38,12 +38,14 @@ public class CurWeatherRepo extends Repo<String, CurWeather> {
     protected void getAsyncData(@Nullable String city, Consumer<CurWeather> callback) {
         if (TextUtils.isEmpty(city)) {
             callback.accept(null);
+            return;
         }
         Request request =
                 new Request.Builder().setUrl(BASE_URL + city).setMethod(Request.GET).build();
         HttpManager.getInstance().mOneHttp.AsyncRequest(request, response -> {
-            if (response.mStatus == Response.ERROR) {
+            if (response.mStatus == Response.ERROR || response.mData == null) {
                 callback.accept(null);
+                return;
             }
             callback.accept(ByteArrayConverter.ToObject(response.mData, CurWeather.class));
         });

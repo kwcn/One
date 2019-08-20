@@ -27,7 +27,7 @@ public class CalendarRepo extends Repo<Void, Calendar> {
         String curDate = new SimpleDateFormat("yyyyMMdd").format(new Date(System.currentTimeMillis()));
         Request request = new Request.Builder().setUrl(BASE_URL + curDate).setMethod(Request.GET).build();
         Response response = HttpManager.getInstance().mOneHttp.SyncRequest(request);
-        if (response.mStatus == Response.ERROR) {
+        if (response.mStatus == Response.ERROR || response.mData == null) {
             return null;
         }
         return ByteArrayConverter.ToObject(response.mData, Calendar.class);
@@ -40,8 +40,9 @@ public class CalendarRepo extends Repo<Void, Calendar> {
         Request request =
                 new Request.Builder().setUrl(BASE_URL + curDate).setMethod(Request.GET).build();
         HttpManager.getInstance().mOneHttp.AsyncRequest(request, response -> {
-            if (response.mStatus == Response.ERROR) {
+            if (response.mStatus == Response.ERROR || response.mData == null) {
                 callback.accept(null);
+                return;
             }
             callback.accept(ByteArrayConverter.ToObject(response.mData, Calendar.class));
         });

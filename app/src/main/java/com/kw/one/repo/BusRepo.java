@@ -32,7 +32,7 @@ public class BusRepo extends Repo<String, Bus> {
         }
         Request request = new Request.Builder().setUrl(url).setMethod(Request.GET).setHeader(getDefaultHeader()).build();
         Response response = HttpManager.getInstance().mOneHttp.SyncRequest(request);
-        if (response.mStatus == Response.ERROR) {
+        if (response.mStatus == Response.ERROR || response.mData == null) {
             return null;
         }
         byte[] newBytes = amendByteArray(response.mData);
@@ -46,16 +46,19 @@ public class BusRepo extends Repo<String, Bus> {
     protected void getAsyncData(@Nullable String url, Consumer<Bus> callback) {
         if (TextUtils.isEmpty(url)) {
             callback.accept(null);
+            return;
         }
         Request request =
                 new Request.Builder().setUrl(url).setMethod(Request.GET).setHeader(getDefaultHeader()).build();
         HttpManager.getInstance().mOneHttp.AsyncRequest(request, response -> {
-            if (response.mStatus == Response.ERROR) {
+            if (response.mStatus == Response.ERROR || response.mData == null) {
                 callback.accept(null);
+                return;
             }
             byte[] newBytes = amendByteArray(response.mData);
             if (newBytes == null) {
                 callback.accept(null);
+                return;
             }
             callback.accept(ByteArrayConverter.ToObject(newBytes, Bus.class));
         });
