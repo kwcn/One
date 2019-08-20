@@ -46,30 +46,23 @@ public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBindin
         });
 
         setRefresh(3, () -> {
-            mViewModel.mBusProvider.reload();
-            mViewModel.mCalendarProvider.reload();
-            mViewModel.mWeatherProvider.reload();
+            mViewModel.mBusProvider.reload(bus -> cutRefreshTask());
+            mViewModel.mCalendarProvider.reload(calendar -> cutRefreshTask());
+            mViewModel.mWeatherProvider.reload(curWeather -> cutRefreshTask());
         });
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel.mWeatherProvider.getLiveData().observe(this, weather -> {
-            mBinding.weather.setWeather(weather);
-            // 无论是否返回有效数据，都应该结束刷新
-            cutRefreshTask();
-        });
+        mViewModel.mWeatherProvider.getLiveData().observe(this,
+                weather -> mBinding.weather.setWeather(weather));
 
-        mViewModel.mCalendarProvider.getLiveData().observe(this, calendar -> {
-            mBinding.calendar.setCalendar(calendar);
-            cutRefreshTask();
-        });
+        mViewModel.mCalendarProvider.getLiveData().observe(this,
+                calendar -> mBinding.calendar.setCalendar(calendar));
 
-        mViewModel.mBusProvider.getLiveData().observe(this, bus -> {
-            mBinding.bus.bus.setText(HomeFragment.this.getBusTime(bus));
-            cutRefreshTask();
-        });
+        mViewModel.mBusProvider.getLiveData().observe(this,
+                bus -> mBinding.bus.bus.setText(HomeFragment.this.getBusTime(bus)));
 
         mViewModel.mBusProvider.setParam(isBus1Time() ? BusRepo.bus_125_0_url :
                 BusRepo.bus_125_1_url);

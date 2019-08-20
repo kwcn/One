@@ -1,5 +1,6 @@
 package com.kw.one.repo.base;
 
+import androidx.core.util.Consumer;
 import androidx.lifecycle.LiveData;
 
 /**
@@ -13,5 +14,5 @@ public interface IProvider<T> {
 
     T getData();
 
-    void reload();
+    void reload(Consumer<T> callback);
 }

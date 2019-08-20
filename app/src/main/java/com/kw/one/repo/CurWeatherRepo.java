@@ -1,8 +1,10 @@
 package com.kw.one.repo;
 
 import android.annotation.SuppressLint;
+import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
+import androidx.core.util.Consumer;
 
 import com.kw.one.net.ByteArrayConverter;
 import com.kw.one.net.HttpManager;
@@ -21,11 +23,29 @@ public class CurWeatherRepo extends Repo<String, CurWeather> {
 
     @Override
     protected CurWeather getSyncData(@Nullable String city) {
+        if (TextUtils.isEmpty(city)) {
+            return null;
+        }
         Request request = new Request.Builder().setUrl(BASE_URL + city).setMethod(Request.GET).build();
         Response response = HttpManager.getInstance().mOneHttp.SyncRequest(request);
         if (response.mStatus == Response.ERROR) {
             return null;
         }
         return ByteArrayConverter.ToObject(response.mData, CurWeather.class);
+    }
+
+    @Override
+    protected void getAsyncData(@Nullable String city, Consumer<CurWeather> callback) {
+        if (TextUtils.isEmpty(city)) {
+            callback.accept(null);
+        }
+        Request request =
+                new Request.Builder().setUrl(BASE_URL + city).setMethod(Request.GET).build();
+        HttpManager.getInstance().mOneHttp.AsyncRequest(request, response -> {
+            if (response.mStatus == Response.ERROR) {
+                callback.accept(null);
+            }
+            callback.accept(ByteArrayConverter.ToObject(response.mData, CurWeather.class));
+        });
     }
 }

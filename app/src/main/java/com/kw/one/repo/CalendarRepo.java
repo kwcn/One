@@ -3,6 +3,7 @@ package com.kw.one.repo;
 import android.annotation.SuppressLint;
 
 import androidx.annotation.Nullable;
+import androidx.core.util.Consumer;
 
 import com.kw.one.net.ByteArrayConverter;
 import com.kw.one.net.HttpManager;
@@ -30,5 +31,19 @@ public class CalendarRepo extends Repo<Void, Calendar> {
             return null;
         }
         return ByteArrayConverter.ToObject(response.mData, Calendar.class);
+    }
+
+    @Override
+    protected void getAsyncData(@Nullable Void aVoid, Consumer<Calendar> callback) {
+        String curDate =
+                new SimpleDateFormat("yyyyMMdd").format(new Date(System.currentTimeMillis()));
+        Request request =
+                new Request.Builder().setUrl(BASE_URL + curDate).setMethod(Request.GET).build();
+        HttpManager.getInstance().mOneHttp.AsyncRequest(request, response -> {
+            if (response.mStatus == Response.ERROR) {
+                callback.accept(null);
+            }
+            callback.accept(ByteArrayConverter.ToObject(response.mData, Calendar.class));
+        });
     }
 }

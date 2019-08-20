@@ -1,5 +1,7 @@
 package com.kw.one.ui.widget;
 
+import android.view.View;
+
 import androidx.annotation.AnyThread;
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
@@ -17,7 +19,7 @@ public class RefreshWorker {
                          @IntRange(from = 1) int taskCount, @NonNull Runnable refresh) {
         mExecutor = Executors.newFixedThreadPool(taskCount);
         refreshLayout.setEnabled(true);
-        refreshLayout.setRefreshing(true);
+        refreshLayout.setVisibility(View.VISIBLE);
         mCyclicBarrier = new CyclicBarrier(taskCount, () -> refreshLayout.setRefreshing(false));
         refreshLayout.setOnRefreshListener(() -> {
             // 直到上一次任务全部完成后再执行新的刷新

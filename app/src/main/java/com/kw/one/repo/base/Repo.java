@@ -1,7 +1,7 @@
 package com.kw.one.repo.base;
 
 import androidx.annotation.Nullable;
-import androidx.lifecycle.ComputableLiveData;
+import androidx.core.util.Consumer;
 
 /**
  * 一个仓库能提供多个数据provider
@@ -12,14 +12,7 @@ import androidx.lifecycle.ComputableLiveData;
 public abstract class Repo<P, T> {
     protected abstract T getSyncData(@Nullable P p);
 
-    protected ComputableLiveData<T> getAsyncData(@Nullable P p) {
-        return new ComputableLiveData<T>() {
-            @Override
-            protected T compute() {
-                return getSyncData(p);
-            }
-        };
-    }
+    protected abstract void getAsyncData(@Nullable P p, Consumer<T> callback);
 
     public Provider<P, T> getProvider(P param) {
         return new Provider<>(this, param);

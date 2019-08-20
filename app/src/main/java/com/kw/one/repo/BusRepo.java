@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.ArrayMap;
 
 import androidx.annotation.Nullable;
+import androidx.core.util.Consumer;
 
 import com.kw.one.net.ByteArrayConverter;
 import com.kw.one.net.HttpManager;
@@ -41,6 +42,25 @@ public class BusRepo extends Repo<String, Bus> {
         return ByteArrayConverter.ToObject(newBytes, Bus.class);
     }
 
+    @Override
+    protected void getAsyncData(@Nullable String url, Consumer<Bus> callback) {
+        if (TextUtils.isEmpty(url)) {
+            callback.accept(null);
+        }
+        Request request =
+                new Request.Builder().setUrl(url).setMethod(Request.GET).setHeader(getDefaultHeader()).build();
+        HttpManager.getInstance().mOneHttp.AsyncRequest(request, response -> {
+            if (response.mStatus == Response.ERROR) {
+                callback.accept(null);
+            }
+            byte[] newBytes = amendByteArray(response.mData);
+            if (newBytes == null) {
+                callback.accept(null);
+            }
+            callback.accept(ByteArrayConverter.ToObject(newBytes, Bus.class));
+        });
+    }
+
     /**
      * 去掉返回数据带有的YGKJ##前后缀
      *
@@ -57,7 +77,7 @@ public class BusRepo extends Repo<String, Bus> {
         return newBytes;
     }
 
-    public Map<String, String> getDefaultHeader() {
+    private Map<String, String> getDefaultHeader() {
         Map<String, String> map = new ArrayMap<>();
         map.put("charset", "utf-8");
         map.put("Accept-Encoding", "gzip");

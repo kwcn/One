@@ -1,33 +1,32 @@
 package com.kw.one.repo.base;
 
-import androidx.lifecycle.ComputableLiveData;
+import androidx.annotation.AnyThread;
+import androidx.core.util.Consumer;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.Transformations;
+import androidx.lifecycle.MutableLiveData;
 
 /**
+ * 设置一个可根据参数变化的数据，但livedata始终是一个
  * @author Kang Wei
  * @date 2019/8/8
  */
 public class MutableProvider<P, T> implements IProvider<T> {
 
     private Repo<P, T> mRepo;
-    private ComputableLiveData<T> mComputableLiveData;
-    private LiveData<T> mLiveData;
-    private MediatorLiveData<P> mParam = new MediatorLiveData<>();
+    private MediatorLiveData<T> mLiveData;
+    private MutableLiveData<P> mParam;
 
     public MutableProvider(Repo<P, T> repo) {
         mRepo = repo;
+        mLiveData = new MediatorLiveData<>();
+        mParam = new MutableLiveData<>();
+        mLiveData.addSource(mParam, p -> mRepo.getAsyncData(p,
+                result -> mLiveData.postValue(result)));
     }
 
     @Override
     public LiveData<T> getLiveData() {
-        if (mLiveData == null) {
-            mLiveData = Transformations.switchMap(mParam, p -> {
-                mComputableLiveData = mRepo.getAsyncData(p);
-                return mComputableLiveData.getLiveData();
-            });
-        }
         return mLiveData;
     }
 
@@ -37,13 +36,15 @@ public class MutableProvider<P, T> implements IProvider<T> {
     }
 
     @Override
-    public void reload() {
-        if (mComputableLiveData != null) {
-            mComputableLiveData.invalidate();
-        }
+    public void reload(Consumer<T> callback) {
+        mRepo.getAsyncData(mParam.getValue(), t -> {
+            mLiveData.postValue(t);
+            callback.accept(t);
+        });
     }
 
+    @AnyThread
     public void setParam(P param) {
-        mParam.setValue(param);
+        mParam.postValue(param);
     }
 }
