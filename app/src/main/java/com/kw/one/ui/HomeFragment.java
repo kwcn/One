@@ -27,7 +27,7 @@ import static com.kw.one.db.DiskMapHelper.CITY_KEY;
  * @date 2019/7/23
  */
 public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBinding> {
-    public static final int TASK_COUNT = 3;
+    private static final int TASK_COUNT = 3;
     private DiskMapHelper mMapHelper;
     private int mFirstLoadTaskCount;
 
