@@ -1,17 +1,13 @@
-package com.kw.one.repo2;
+package com.kw.arch.model.base;
 
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Kang Wei
- * @date 2019/10/28
+ * @date 2019/10/29
  */
 public class Repository {
-    private ConcurrentHashMap<String, IDataSource> mDataSources;
-
-    private Repository() {
-        mDataSources = new ConcurrentHashMap<>();
-    }
+    private ConcurrentHashMap<String, BaseDataSource> mDataSources;
 
     public static Repository getInstance() {
         return InRepository.inRepository;
@@ -21,7 +17,11 @@ public class Repository {
         private static Repository inRepository = new Repository();
     }
 
-    public <T extends IDataSource> void addDataSource(Class<T> sourceClass) {
+    private Repository() {
+        mDataSources = new ConcurrentHashMap<>();
+    }
+
+    public <T extends BaseDataSource> Repository appendSource(Class<T> sourceClass) {
         String canonicalName = sourceClass.getCanonicalName();
         if (canonicalName == null) {
             throw new IllegalArgumentException("Local and anonymous classes can not be ViewModels");
@@ -35,13 +35,14 @@ public class Repository {
             throw new RuntimeException("Cannot create an instance of " + sourceClass, e);
         }
         mDataSources.put(canonicalName, instance);
+        return this;
     }
 
-    public IDataSource getDataSource(Class sourceClass) {
+    public <T extends BaseDataSource> BaseDataSource getDataSource(Class<T> sourceClass) {
         String canonicalName = sourceClass.getCanonicalName();
         if (canonicalName == null) {
             throw new IllegalArgumentException("Local and anonymous classes can not be ViewModels");
         }
-        return mDataSources.get(canonicalName);
+        return (T) mDataSources.get(canonicalName);
     }
 }
