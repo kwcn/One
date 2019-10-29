@@ -1,13 +1,15 @@
 package com.kw.arch.model.base;
 
-import java.util.concurrent.ConcurrentHashMap;
+import androidx.annotation.NonNull;
+
+import java.util.HashMap;
 
 /**
  * @author Kang Wei
  * @date 2019/10/29
  */
 public class Repository {
-    private ConcurrentHashMap<String, BaseDataSource> mDataSources;
+    private HashMap<String, BaseDataSource> mDataSources;
 
     public static Repository getInstance() {
         return InRepository.inRepository;
@@ -18,7 +20,7 @@ public class Repository {
     }
 
     private Repository() {
-        mDataSources = new ConcurrentHashMap<>();
+        mDataSources = new HashMap<>();
     }
 
     public <T extends BaseDataSource> Repository appendSource(Class<T> sourceClass) {
@@ -38,11 +40,11 @@ public class Repository {
         return this;
     }
 
-    public <T extends BaseDataSource> BaseDataSource getDataSource(Class<T> sourceClass) {
+    public BaseDataSource getDataSource(@NonNull Class<?> sourceClass) {
         String canonicalName = sourceClass.getCanonicalName();
         if (canonicalName == null) {
             throw new IllegalArgumentException("Local and anonymous classes can not be ViewModels");
         }
-        return (T) mDataSources.get(canonicalName);
+        return mDataSources.get(canonicalName);
     }
 }

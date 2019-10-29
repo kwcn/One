@@ -31,7 +31,7 @@ public class Request {
             throw new NullPointerException("must set no null method and url");
         }
         if (method.equals(POST) && requestBody == null) {
-            throw new NullPointerException("must set requestBody when use post getRequest");
+            throw new NullPointerException("must set requestBody when use post request");
         }
         mMethod = method;
         mUrl = url;

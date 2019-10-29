@@ -6,7 +6,7 @@ android {
 
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 23
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -26,6 +26,9 @@ android {
         targetCompatibility = '1.8'
     }
 
+    dataBinding {
+        enabled = true
+    }
 }
 
 dependencies {
