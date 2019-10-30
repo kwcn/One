@@ -2,6 +2,7 @@ package com.kw.arch.annotation;
 
 import androidx.annotation.NonNull;
 
+import com.kw.arch.model.base.BaseDataSource;
 import com.kw.arch.model.base.Repository;
 import com.kw.arch.viewmodel.BaseViewModel;
 
@@ -20,7 +21,11 @@ public class SourceAnnotate {
             if (annotation != null) {
                 field.setAccessible(true);
                 try {
-                    field.set(viewModel, repository.getDataSource(field.getType()));
+                    BaseDataSource dataSource = repository.getDataSource(field.getType());
+                    if (dataSource == null) {
+                        dataSource = repository.appendSource(field.getType());
+                    }
+                    field.set(viewModel, dataSource);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }

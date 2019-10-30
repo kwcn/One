@@ -1,9 +1,9 @@
 package com.kw.one.arch;
 
-import android.util.Log;
-
 import com.kw.arch.annotation.Source;
 import com.kw.arch.viewmodel.BaseViewModel;
+import com.kw.one.arch.myhttp.WeatherSource;
+import com.kw.one.arch.retrofit.WeatherRetrofitSource;
 
 /**
  * @author Kang Wei
@@ -12,4 +12,6 @@ import com.kw.arch.viewmodel.BaseViewModel;
 public class ArchViewModel extends BaseViewModel {
     @Source
     public WeatherSource mWeather;
+    @Source
+    public WeatherRetrofitSource mRetrofitWeather;
 }

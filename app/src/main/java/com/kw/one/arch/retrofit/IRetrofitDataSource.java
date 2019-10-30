@@ -1,8 +1,10 @@
-package com.kw.arch.model;
+package com.kw.one.arch.retrofit;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Consumer;
+
+import com.kw.arch.model.INetDataSource;
 
 import retrofit2.Call;
 import retrofit2.Callback;
