@@ -1,7 +1,10 @@
 package com.kw.arch.model.base;
 
+import android.app.Application;
+
 import androidx.annotation.NonNull;
 
+import java.lang.reflect.Constructor;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -28,13 +31,29 @@ public class Repository {
         if (canonicalName == null) {
             throw new IllegalArgumentException("Local and anonymous classes can not be ViewModels");
         }
-        BaseDataSource instance;
+        BaseDataSource instance = null;
         try {
             instance = (BaseDataSource) sourceClass.newInstance();
         } catch (InstantiationException e) {
             throw new RuntimeException("Cannot create an instance of " + sourceClass, e);
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Cannot create an instance of " + sourceClass, e);
+        }
+        mDataSources.put(canonicalName, instance);
+        return instance;
+    }
+
+    public BaseDataSource appendApplicationSource(Class<?> sourceClass, Application application) {
+        String canonicalName = sourceClass.getCanonicalName();
+        if (canonicalName == null) {
+            throw new IllegalArgumentException("Local and anonymous classes can not be ViewModels");
+        }
+        BaseApplicationDataSource instance = null;
+        try {
+            Constructor<?> constructor = sourceClass.getConstructor(Application.class);
+            instance = (BaseApplicationDataSource) constructor.newInstance(application);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         mDataSources.put(canonicalName, instance);
         return instance;

@@ -29,6 +29,12 @@ public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBindin
             mBinding.weather2.setText(rp.data.weather);
         });
         mViewModel.mRetrofitWeather.request().setValue("天津");
+
+        mViewModel.mWeatherDbDataSource.response().observe(this, rp -> {
+            if (rp == null) return;
+            mBinding.weatherDb.setText(rp.address);
+        });
+        mViewModel.mWeatherDbDataSource.request().setValue("天津");
     }
 
     @Override

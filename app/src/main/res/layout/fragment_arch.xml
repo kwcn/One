@@ -17,5 +17,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="hello word" />
+
+        <TextView
+            android:id="@+id/weather_db"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="hello word" />
     </LinearLayout>
 </layout>
