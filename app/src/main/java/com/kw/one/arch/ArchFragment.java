@@ -1,12 +1,14 @@
 package com.kw.one.arch;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.kw.arch.view.BaseFragment;
 import com.kw.one.R;
+import com.kw.one.arch.room.WeatherEntity;
 import com.kw.one.databinding.FragmentArchBinding;
 
 /**
@@ -32,9 +34,29 @@ public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBindin
 
         mViewModel.mWeatherDbDataSource.response().observe(this, rp -> {
             if (rp == null) return;
-            mBinding.weatherDb.setText(rp.address);
+            mBinding.weatherDb.setText(rp.temp);
+            Log.i("kwdy", "mWeatherDbDataSource: " + rp.temp);
         });
         mViewModel.mWeatherDbDataSource.request().setValue("天津");
+
+        mBinding.fetch.setOnClickListener(v -> {
+            mViewModel.mWeatherDbDataSource.request().setValue("天津");
+        });
+
+        mBinding.updateDb.setOnClickListener(v -> {
+            WeatherEntity entity = new WeatherEntity();
+            entity.address = "天津";
+            entity.temp = System.currentTimeMillis() + "";
+            mViewModel.mWeatherDbDataSource.update(entity);
+        });
+
+        mViewModel.mWeatherMixDataSource.response().observe(this, rp -> {
+            if (rp == null) return;
+            mBinding.weatherDbNet.setText(rp.temp);
+            Log.i("kwdy", "mWeatherMixDataSource: " + rp.temp);
+        });
+
+        mViewModel.mWeatherMixDataSource.request().setValue("天津");
     }
 
     @Override
