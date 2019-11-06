@@ -1,4 +1,4 @@
-package com.kw.one.arch.mix;
+package com.kw.arch.model;
 
 import android.app.Application;
 
@@ -7,7 +7,8 @@ import androidx.annotation.Nullable;
 import androidx.core.util.Consumer;
 import androidx.lifecycle.LiveData;
 
-import com.kw.arch.model.IDbAndNetDataSource;
+import com.kw.arch.model.impl.IRetrofit;
+import com.kw.arch.model.impl.IRoom;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -18,7 +19,7 @@ import retrofit2.Response;
  * @date 2019/11/2
  */
 public abstract class IRetrofitAndRoomDataSource<P, NetT, DbT> extends IDbAndNetDataSource<P,
-        NetT, DbT> {
+        NetT, DbT> implements IRetrofit<P, NetT>, IRoom<P, DbT> {
     public IRetrofitAndRoomDataSource(@NonNull Application application) {
         super(application);
     }
@@ -41,12 +42,11 @@ public abstract class IRetrofitAndRoomDataSource<P, NetT, DbT> extends IDbAndNet
 
     @Override
     protected LiveData<DbT> fromDb(@Nullable P request) {
-        return queryDb(request);
+        return query(request);
     }
 
-    @NonNull
-    public abstract Call<NetT> getCall(@Nullable P request);
-
-    @NonNull
-    protected abstract LiveData<DbT> queryDb(@Nullable P request);
+    @Override
+    protected void insertToDb(@NonNull DbT dbData) {
+        insert(dbData);
+    }
 }

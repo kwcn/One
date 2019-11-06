@@ -1,4 +1,4 @@
-package com.kw.arch.model.base;
+package com.kw.arch.model.impl;
 
 import androidx.annotation.Nullable;
 import androidx.core.util.Consumer;

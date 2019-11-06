@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Consumer;
 
-import com.kw.arch.model.base.BaseDataSource;
+import com.kw.arch.model.BaseDataSource;
 import com.kw.one.net.ByteArrayConverter;
 import com.kw.one.net.HttpManager;
 import com.kw.one.net.Request;

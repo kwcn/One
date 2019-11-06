@@ -1,12 +1,10 @@
 package com.kw.arch.annotation;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
-import com.kw.arch.model.base.BaseApplicationDataSource;
-import com.kw.arch.model.base.BaseDataSource;
-import com.kw.arch.model.base.Repository;
+import com.kw.arch.model.BaseApplicationDataSource;
+import com.kw.arch.model.BaseDataSource;
+import com.kw.arch.model.Repository;
 import com.kw.arch.viewmodel.BaseViewModel;
 
 import java.lang.reflect.Field;

@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
 import com.kw.arch.annotation.SourceAnnotate;
-import com.kw.arch.model.base.Repository;
+import com.kw.arch.model.Repository;
 
 /**
  * @author Kang Wei

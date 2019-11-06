@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 
+import com.kw.arch.model.IRetrofitAndRoomDataSource;
 import com.kw.one.arch.retrofit.WebService;
 import com.kw.one.arch.room.WeatherDao;
 import com.kw.one.arch.room.WeatherEntity;
@@ -33,17 +34,6 @@ public class WeatherMixDataSource extends IRetrofitAndRoomDataSource<String, Cur
         return WebService.getInstance().mWebService.getWeather(request);
     }
 
-    @NonNull
-    @Override
-    protected LiveData<WeatherEntity> queryDb(@Nullable String request) {
-        return mDao.query(request);
-    }
-
-    @Override
-    protected void insertToDb(@NonNull WeatherEntity dbData) {
-        mDao.insert(dbData);
-    }
-
     @Override
     protected boolean isUpdateFromNet(@Nullable String request) {
         return true;
@@ -62,5 +52,26 @@ public class WeatherMixDataSource extends IRetrofitAndRoomDataSource<String, Cur
         entity.windDirection = netData.data.windDirection;
         entity.windPower = netData.data.windPower;
         return entity;
+    }
+
+    @NonNull
+    @Override
+    public LiveData<WeatherEntity> query(@Nullable String param) {
+        return mDao.query(param);
+    }
+
+    @Override
+    public void insert(@NonNull WeatherEntity entity) {
+        mDao.insert(entity);
+    }
+
+    @Override
+    public void delete(@NonNull WeatherEntity entity) {
+        mDao.delete(entity);
+    }
+
+    @Override
+    public void update(@NonNull WeatherEntity entity) {
+        mDao.update(entity);
     }
 }

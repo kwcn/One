@@ -1,4 +1,4 @@
-package com.kw.arch.model.base;
+package com.kw.arch.model;
 
 import android.app.Application;
 

@@ -1,10 +1,13 @@
-package com.kw.arch.model.base;
+package com.kw.arch.model;
 
 import androidx.annotation.AnyThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Consumer;
 import androidx.lifecycle.MutableLiveData;
+
+import com.kw.arch.model.impl.IDataSource;
+import com.kw.arch.model.impl.IRefresh;
 
 
 /**

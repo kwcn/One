@@ -2,6 +2,7 @@ package com.kw.one.arch.retrofit;
 
 import androidx.annotation.NonNull;
 
+import com.kw.arch.model.IRetrofitDataSource;
 import com.kw.one.repo.bean.CurWeather;
 
 import retrofit2.Call;

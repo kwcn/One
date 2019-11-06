@@ -8,8 +8,6 @@ import androidx.core.util.Consumer;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 
-import com.kw.arch.model.base.BaseApplicationDataSource;
-
 /**
  * @author Kang Wei
  * @date 2019/11/2
