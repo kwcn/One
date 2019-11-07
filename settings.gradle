@@ -1,1 +1,1 @@
-include ':arch'
+include ':app', ':arch'
