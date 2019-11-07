@@ -23,12 +23,14 @@ public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBindin
         mViewModel.mWeather.response().observe(this, rp -> {
             if (rp == null) return;
             mBinding.weather.setText(rp.data.weather);
+            Log.i("kwdy", "mWeather: " + rp.data.weather);
         });
         mViewModel.mWeather.request().setValue("天津");
 
         mViewModel.mRetrofitWeather.response().observe(this, rp -> {
             if (rp == null) return;
             mBinding.weather2.setText(rp.data.weather);
+            Log.i("kwdy", "mRetrofitWeather: " + rp.data.weather);
         });
         mViewModel.mRetrofitWeather.request().setValue("天津");
 
@@ -40,7 +42,10 @@ public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBindin
         mViewModel.mWeatherDbDataSource.request().setValue("天津");
 
         mBinding.fetch.setOnClickListener(v -> {
-            mViewModel.mWeatherDbDataSource.request().setValue("天津");
+            mViewModel.mWeather.onReload(null);
+            mViewModel.mRetrofitWeather.onReload(null);
+            mViewModel.mWeatherDbDataSource.onReload(null);
+            mViewModel.mWeatherMixDataSource.onReload(null);
         });
 
         mBinding.updateDb.setOnClickListener(v -> {
