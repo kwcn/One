@@ -20,6 +20,11 @@ public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBindin
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         startRefresh(TASK_COUNT);
+        bindUI();
+        setEvent();
+    }
+
+    private void bindUI() {
         // 普通http访问
         mViewModel.mWeather.response().observe(this, rp -> {
             try {
@@ -50,7 +55,9 @@ public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBindin
             cutRefreshTask(mViewModel.mWeatherMixDataSource.toString());
         });
         mViewModel.mWeatherMixDataSource.request().setValue("天津");
+    }
 
+    private void setEvent() {
         mBinding.fetch.setOnClickListener(v -> {
             startRefresh(TASK_COUNT);
             mViewModel.mWeather.onReload(null);
@@ -65,6 +72,20 @@ public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBindin
             entity.temp = System.currentTimeMillis() + "";
             mViewModel.mWeatherDbDataSource.update(entity);
         });
+
+        mBinding.swipeRefresh.setOnRefreshListener(() -> {
+            mRefreshWorker.start(TASK_COUNT);
+            mViewModel.mWeather.onReload(null);
+            mViewModel.mRetrofitWeather.onReload(null);
+            mViewModel.mWeatherDbDataSource.onReload(null);
+            mViewModel.mWeatherMixDataSource.onReload(null);
+        });
+    }
+
+    @Override
+    public void onRefresh() {
+        super.onRefresh();
+        mBinding.swipeRefresh.setRefreshing(false);
     }
 
     @Override

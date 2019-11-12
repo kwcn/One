@@ -1,45 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/weather"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="hello word" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/weather2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="hello word" />
+            <TextView
+                android:id="@+id/weather"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="hello word" />
 
-        <TextView
-            android:id="@+id/weather_db"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="hello word" />
+            <TextView
+                android:id="@+id/weather2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="hello word" />
 
-        <TextView
-            android:id="@+id/weather_db_net"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="hello word" />
+            <TextView
+                android:id="@+id/weather_db"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="hello word" />
 
-        <Button
-            android:id="@+id/fetch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="fetch" />
+            <TextView
+                android:id="@+id/weather_db_net"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="hello word" />
 
-        <Button
-            android:id="@+id/updateDb"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="updateDb" />
-    </LinearLayout>
+            <Button
+                android:id="@+id/fetch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="fetch" />
+
+            <Button
+                android:id="@+id/updateDb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="updateDb" />
+        </LinearLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>

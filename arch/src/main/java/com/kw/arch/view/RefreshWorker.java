@@ -17,12 +17,12 @@ import java.util.concurrent.Executors;
  */
 public class RefreshWorker {
     private ExecutorService mExecutor;
-    private Runnable mRefresh;
+    private IRefresh mRefresh;
     private volatile CountDownLatch mCountDownLatch;
     private HashMap<String, Boolean> mTaskKeyMap;
     private Handler mMainHandler;
 
-    public RefreshWorker(@NonNull @AnyThread Runnable refresh) {
+    public RefreshWorker(@NonNull @AnyThread IRefresh refresh) {
         mRefresh = refresh;
         mExecutor = Executors.newSingleThreadExecutor();
         mTaskKeyMap = new HashMap<>();
@@ -42,7 +42,7 @@ public class RefreshWorker {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {
-                mMainHandler.post(mRefresh);
+                mMainHandler.post(mRefresh::onRefresh);
             }
         });
     }

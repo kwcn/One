@@ -17,7 +17,7 @@ import com.kw.arch.viewmodel.BaseViewModel;
  * @author Kang Wei
  * @date 2019/10/29
  */
-public abstract class BaseFragment<VM extends BaseViewModel, ViewBinding extends ViewDataBinding> extends Fragment {
+public abstract class BaseFragment<VM extends BaseViewModel, ViewBinding extends ViewDataBinding> extends Fragment implements IRefresh{
     protected ViewBinding mBinding;
     protected VM mViewModel;
     protected GLoading.Holder mLoadHolder;
@@ -30,7 +30,7 @@ public abstract class BaseFragment<VM extends BaseViewModel, ViewBinding extends
         mViewModel = getVModel();
         mBinding = DataBindingUtil.inflate(inflater, getLayoutId(), null, false);
         mLoadHolder = GLoading.getDefault().wrap(mBinding.getRoot());
-        mRefreshWorker = new RefreshWorker(getRefreshWorker());
+        mRefreshWorker = new RefreshWorker(this);
         return mLoadHolder.getWrapper();
     }
 
@@ -38,9 +38,10 @@ public abstract class BaseFragment<VM extends BaseViewModel, ViewBinding extends
 
     protected abstract int getLayoutId();
 
-    // 所有任务都完成后执行的内容
-    protected Runnable getRefreshWorker() {
-        return () -> mLoadHolder.showLoadSuccess();
+    // 所有任务都完成后执行该回调方法
+    @Override
+    public void onRefresh() {
+        mLoadHolder.showLoadSuccess();
     }
 
     // 开启刷新任务
