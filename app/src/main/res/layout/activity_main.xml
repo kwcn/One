@@ -4,7 +4,8 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
+        <!--android:name="com.kw.one.arch.ArchFragment"-->
+        <!--android:name="com.kw.one.ui.HomeFragment"-->
         <fragment
             android:id="@+id/fragment1"
             android:name="com.kw.one.arch.ArchFragment"

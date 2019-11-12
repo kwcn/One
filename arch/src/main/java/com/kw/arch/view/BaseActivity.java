@@ -1,6 +1,7 @@
 package com.kw.arch.view;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,11 +16,15 @@ import androidx.lifecycle.ViewModel;
 public abstract class BaseActivity<VM extends ViewModel, Binding extends ViewDataBinding> extends AppCompatActivity {
     protected Binding mBinding;
     protected VM mViewModel;
+    protected GLoading.Holder mLoadHolder;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBinding = DataBindingUtil.setContentView(this, getLayoutId());
+        mBinding = DataBindingUtil.inflate(LayoutInflater.from(getApplicationContext()),
+                getLayoutId(), null, false);
+        mLoadHolder = GLoading.getDefault().wrap(mBinding.getRoot());
+        setContentView(mLoadHolder.getWrapper());
         mViewModel = getViewMode();
     }
 

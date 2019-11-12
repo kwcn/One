@@ -20,6 +20,8 @@ import com.kw.arch.viewmodel.BaseViewModel;
 public abstract class BaseFragment<VM extends BaseViewModel, ViewBinding extends ViewDataBinding> extends Fragment {
     protected ViewBinding mBinding;
     protected VM mViewModel;
+    protected GLoading.Holder mLoadHolder;
+    protected RefreshWorker mRefreshWorker;
 
     @Nullable
     @Override
@@ -27,11 +29,28 @@ public abstract class BaseFragment<VM extends BaseViewModel, ViewBinding extends
                              @Nullable Bundle savedInstanceState) {
         mViewModel = getVModel();
         mBinding = DataBindingUtil.inflate(inflater, getLayoutId(), null, false);
-        return mBinding.getRoot();
+        mLoadHolder = GLoading.getDefault().wrap(mBinding.getRoot());
+        mRefreshWorker = new RefreshWorker(getRefreshWorker());
+        return mLoadHolder.getWrapper();
     }
 
     protected abstract VM getVModel();
 
     protected abstract int getLayoutId();
 
+    // 所有任务都完成后执行的内容
+    protected Runnable getRefreshWorker() {
+        return () -> mLoadHolder.showLoadSuccess();
+    }
+
+    // 开启刷新任务
+    protected void startRefresh(int taskCount) {
+        mLoadHolder.showLoading();
+        mRefreshWorker.start(taskCount);
+    }
+
+    // 每当有任务完成应调用该方法
+    protected void cutRefreshTask(String taskKey) {
+        mRefreshWorker.finishOneTask(taskKey);
+    }
 }

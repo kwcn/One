@@ -1,7 +1,6 @@
 package com.kw.one.arch;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProviders;
@@ -16,32 +15,44 @@ import com.kw.one.databinding.FragmentArchBinding;
  * @date 2019/10/29
  */
 public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBinding> {
-
+    private static final int TASK_COUNT = 4;
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        startRefresh(TASK_COUNT);
+        // 普通http访问
         mViewModel.mWeather.response().observe(this, rp -> {
-            if (rp == null) return;
-            mBinding.weather.setText(rp.data.weather);
-            Log.i("kwdy", "mWeather: " + rp.data.weather);
+            try {
+                mBinding.weather.setText(rp.data.weather);
+            } finally {
+                cutRefreshTask(mViewModel.mWeather.toString());
+            }
         });
         mViewModel.mWeather.request().setValue("天津");
-
+        // Retrofit访问
         mViewModel.mRetrofitWeather.response().observe(this, rp -> {
             if (rp == null) return;
             mBinding.weather2.setText(rp.data.weather);
-            Log.i("kwdy", "mRetrofitWeather: " + rp.data.weather);
+            cutRefreshTask(mViewModel.mRetrofitWeather.toString());
         });
         mViewModel.mRetrofitWeather.request().setValue("天津");
-
+        // DB访问
         mViewModel.mWeatherDbDataSource.response().observe(this, rp -> {
             if (rp == null) return;
             mBinding.weatherDb.setText(rp.temp);
-            Log.i("kwdy", "mWeatherDbDataSource: " + rp.temp);
+            cutRefreshTask(mViewModel.mWeatherDbDataSource.toString());
         });
         mViewModel.mWeatherDbDataSource.request().setValue("天津");
+        // DB+Net访问
+        mViewModel.mWeatherMixDataSource.response().observe(this, rp -> {
+            if (rp == null) return;
+            mBinding.weatherDbNet.setText(rp.temp);
+            cutRefreshTask(mViewModel.mWeatherMixDataSource.toString());
+        });
+        mViewModel.mWeatherMixDataSource.request().setValue("天津");
 
         mBinding.fetch.setOnClickListener(v -> {
+            startRefresh(TASK_COUNT);
             mViewModel.mWeather.onReload(null);
             mViewModel.mRetrofitWeather.onReload(null);
             mViewModel.mWeatherDbDataSource.onReload(null);
@@ -54,14 +65,6 @@ public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBindin
             entity.temp = System.currentTimeMillis() + "";
             mViewModel.mWeatherDbDataSource.update(entity);
         });
-
-        mViewModel.mWeatherMixDataSource.response().observe(this, rp -> {
-            if (rp == null) return;
-            mBinding.weatherDbNet.setText(rp.temp);
-            Log.i("kwdy", "mWeatherMixDataSource: " + rp.temp);
-        });
-
-        mViewModel.mWeatherMixDataSource.request().setValue("天津");
     }
 
     @Override
