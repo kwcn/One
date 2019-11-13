@@ -1,5 +1,6 @@
 package com.kw.arch.view;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,17 +12,19 @@ import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
 
+import com.kw.arch.aspect.ICheckNet;
+import com.kw.arch.model.BaseDataSource;
 import com.kw.arch.viewmodel.BaseViewModel;
 
 /**
  * @author Kang Wei
  * @date 2019/10/29
  */
-public abstract class BaseFragment<VM extends BaseViewModel, ViewBinding extends ViewDataBinding> extends Fragment implements IRefresh{
+public abstract class BaseFragment<VM extends BaseViewModel, ViewBinding extends ViewDataBinding> extends Fragment implements ILoaded, ICheckNet {
     protected ViewBinding mBinding;
     protected VM mViewModel;
     protected GLoading.Holder mLoadHolder;
-    protected RefreshWorker mRefreshWorker;
+    protected LoadedController mLoadedController;
 
     @Nullable
     @Override
@@ -30,7 +33,7 @@ public abstract class BaseFragment<VM extends BaseViewModel, ViewBinding extends
         mViewModel = getVModel();
         mBinding = DataBindingUtil.inflate(inflater, getLayoutId(), null, false);
         mLoadHolder = GLoading.getDefault().wrap(mBinding.getRoot());
-        mRefreshWorker = new RefreshWorker(this);
+        mLoadedController = new LoadedController(this);
         return mLoadHolder.getWrapper();
     }
 
@@ -40,18 +43,37 @@ public abstract class BaseFragment<VM extends BaseViewModel, ViewBinding extends
 
     // 所有任务都完成后执行该回调方法
     @Override
-    public void onRefresh() {
-        mLoadHolder.showLoadSuccess();
+    public void onLoaded(boolean isValid) {
+        if (isValid) {
+            mLoadHolder.showLoadSuccess();
+        } else {
+            mLoadHolder.showLoadFailed();
+        }
     }
 
-    // 开启刷新任务
-    protected void startRefresh(int taskCount) {
+    // 开启加载任务
+    protected void startLoading(int taskCount) {
         mLoadHolder.showLoading();
-        mRefreshWorker.start(taskCount);
+        mLoadedController.start(taskCount);
     }
 
     // 每当有任务完成应调用该方法
-    protected void cutRefreshTask(String taskKey) {
-        mRefreshWorker.finishOneTask(taskKey);
+    protected void loadedOneTask(String taskKey, boolean isValid) {
+        mLoadedController.loadedOneTask(taskKey, isValid);
+    }
+
+    protected void loadedOneTask(BaseDataSource source, boolean isValid) {
+        loadedOneTask(source.toString(), isValid);
+    }
+
+    @NonNull
+    @Override
+    public Context onContext() {
+        return getContext();
+    }
+
+    @Override
+    public void onFailNet() {
+        mLoadHolder.showLoadFailed();
     }
 }

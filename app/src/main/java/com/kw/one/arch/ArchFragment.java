@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.kw.arch.aspect.CheckNet;
 import com.kw.arch.view.BaseFragment;
 import com.kw.one.R;
 import com.kw.one.arch.room.WeatherEntity;
@@ -19,65 +20,58 @@ public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBindin
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        startRefresh(TASK_COUNT);
+        startLoading(TASK_COUNT);
         bindUI();
+        request();
         setEvent();
     }
 
     private void bindUI() {
-        // 普通http访问
+        // 普通http
         mViewModel.mWeather.response().observe(this, rp -> {
             try {
                 mBinding.weather.setText(rp.data.weather);
+                loadedOneTask(mViewModel.mWeather, true);
             } catch (Exception e) {
-                mBinding.weather.setText("");
-            } finally {
-                cutRefreshTask(mViewModel.mWeather.toString());
+                loadedOneTask(mViewModel.mWeather, true);
             }
         });
-        mViewModel.mWeather.request().setValue("天津");
-        // Retrofit访问
+
+        // Retrofit
         mViewModel.mRetrofitWeather.response().observe(this, rp -> {
             try {
                 mBinding.weather2.setText(rp.data.weather);
+                loadedOneTask(mViewModel.mRetrofitWeather, true);
             } catch (Exception e) {
-                mBinding.weather2.setText("");
-            } finally {
-                cutRefreshTask(mViewModel.mRetrofitWeather.toString());
+                loadedOneTask(mViewModel.mRetrofitWeather, false);
             }
         });
-        mViewModel.mRetrofitWeather.request().setValue("天津");
+
         // DB访问
         mViewModel.mWeatherDbDataSource.response().observe(this, rp -> {
             try {
                 mBinding.weatherDb.setText(rp.temp);
+                loadedOneTask(mViewModel.mWeatherDbDataSource, true);
             } catch (Exception e) {
-                mBinding.weatherDb.setText("");
-            } finally {
-                cutRefreshTask(mViewModel.mWeatherDbDataSource.toString());
+                loadedOneTask(mViewModel.mWeatherDbDataSource, false);
             }
         });
-        mViewModel.mWeatherDbDataSource.request().setValue("天津");
+
         // DB+Net访问
         mViewModel.mWeatherMixDataSource.response().observe(this, rp -> {
             try {
                 mBinding.weatherDbNet.setText(rp.temp);
+                loadedOneTask(mViewModel.mWeatherMixDataSource, true);
             } catch (Exception e) {
-                mBinding.weatherDbNet.setText("");
-            } finally {
-                cutRefreshTask(mViewModel.mWeatherMixDataSource.toString());
+                loadedOneTask(mViewModel.mWeatherMixDataSource, false);
             }
         });
-        mViewModel.mWeatherMixDataSource.request().setValue("天津");
     }
 
     private void setEvent() {
         mBinding.fetch.setOnClickListener(v -> {
-            startRefresh(TASK_COUNT);
-            mViewModel.mWeather.onReload(null);
-            mViewModel.mRetrofitWeather.onReload(null);
-            mViewModel.mWeatherDbDataSource.onReload(null);
-            mViewModel.mWeatherMixDataSource.onReload(null);
+            startLoading(TASK_COUNT);
+            request();
         });
 
         mBinding.updateDb.setOnClickListener(v -> {
@@ -88,17 +82,29 @@ public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBindin
         });
 
         mBinding.swipeRefresh.setOnRefreshListener(() -> {
-            mRefreshWorker.start(TASK_COUNT);
-            mViewModel.mWeather.onReload(null);
-            mViewModel.mRetrofitWeather.onReload(null);
-            mViewModel.mWeatherDbDataSource.onReload(null);
-            mViewModel.mWeatherMixDataSource.onReload(null);
+            // 不显示刷新界面，只显示下拉刷新进度条
+            mLoadedController.start(TASK_COUNT);
+            request();
+        });
+
+        // 无效数据，重试按钮
+        mLoadHolder.withRetry(status -> {
+            startLoading(TASK_COUNT);
+            request();
         });
     }
 
+    @CheckNet
+    private void request() {
+        mViewModel.mWeather.request().setValue("天津");
+        mViewModel.mRetrofitWeather.request().setValue("天津");
+        mViewModel.mWeatherDbDataSource.request().setValue("天津");
+        mViewModel.mWeatherMixDataSource.request().setValue("天津");
+    }
+
     @Override
-    public void onRefresh() {
-        super.onRefresh();
+    public void onLoaded(boolean isValid) {
+        super.onLoaded(isValid);
         mBinding.swipeRefresh.setRefreshing(false);
     }
 

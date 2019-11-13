@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Consumer;
 
-import com.kw.arch.aspect.CheckNet;
 import com.kw.arch.model.impl.IRetrofit;
 
 import retrofit2.Call;
@@ -17,7 +16,6 @@ import retrofit2.Response;
  */
 public abstract class IRetrofitDataSource<P, T> extends BaseDataSource<P, T> implements IRetrofit<P, T> {
     // 设置网络检查的注解
-    @CheckNet
     @Override
     public void fetchData(@Nullable P request, @NonNull Consumer<T> callback) {
         getCall(request).enqueue(new Callback<T>() {

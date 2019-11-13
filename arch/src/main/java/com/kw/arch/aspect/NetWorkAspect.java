@@ -1,12 +1,17 @@
 package com.kw.arch.aspect;
 
-import android.util.Log;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.widget.Toast;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+
+import static android.content.Context.CONNECTIVITY_SERVICE;
 
 /**
  * @author Kang Wei
@@ -23,15 +28,24 @@ public class NetWorkAspect {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         CheckNet checkNet = signature.getMethod().getAnnotation(CheckNet.class);
         if (checkNet != null) {
-            NetWorkAdapter netWorkAdapter = NetWorkAdapter.getInstance();
-            if (netWorkAdapter != null && netWorkAdapter.getConnect() != null) {
-                if (netWorkAdapter.getConnect().onConnect()) {
-                    return joinPoint.proceed();
-                } else {
-                    return null;
-                }
+            ICheckNet iCheckNet = (ICheckNet) joinPoint.getThis();
+            if (getCurNetWorkStatus(iCheckNet.onContext())) {
+                return joinPoint.proceed();
+            } else {
+                iCheckNet.onFailNet();
+                return null;
             }
         }
         return joinPoint.proceed();
+    }
+
+    private boolean getCurNetWorkStatus(Context context) {
+        NetworkInfo activeNetworkInfo =
+                ((ConnectivityManager) context.getSystemService(CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+        if (activeNetworkInfo == null || !activeNetworkInfo.isConnected()) {
+            Toast.makeText(context, "无网络连接，请检查网络", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 }

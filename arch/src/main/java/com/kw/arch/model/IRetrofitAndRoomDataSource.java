@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 import androidx.core.util.Consumer;
 import androidx.lifecycle.LiveData;
 
-import com.kw.arch.aspect.CheckNet;
 import com.kw.arch.model.impl.IRetrofit;
 import com.kw.arch.model.impl.IRoom;
 
@@ -25,7 +24,6 @@ public abstract class IRetrofitAndRoomDataSource<P, NetT, DbT> extends IDbAndNet
         super(application);
     }
 
-    @CheckNet
     @Override
     protected void fromNet(@Nullable P request, @NonNull Consumer<NetT> callback) {
         getCall(request).enqueue(new Callback<NetT>() {

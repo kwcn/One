@@ -7,6 +7,7 @@ import android.widget.FrameLayout;
 import com.kw.arch.R;
 
 import static com.kw.arch.view.GLoading.STATUS_LOADING;
+import static com.kw.arch.view.GLoading.STATUS_LOAD_FAILED;
 import static com.kw.arch.view.GLoading.STATUS_LOAD_SUCCESS;
 
 /**
@@ -23,6 +24,13 @@ public class DefaultGLoadingAdapter implements GLoading.Adapter {
                 FrameLayout hideView = new FrameLayout(holder.getContext());
                 hideView.setVisibility(View.GONE);
                 return hideView;
+            case STATUS_LOAD_FAILED:
+                View failedView =
+                        LayoutInflater.from(holder.getContext()).inflate(R.layout.fail_loading_page, holder.getWrapper(), false);
+                failedView.findViewById(R.id.retry).setOnClickListener(v -> {
+                    holder.getRetryTask().retry(STATUS_LOAD_FAILED);
+                });
+                return failedView;
             default:
                 return null;
         }
