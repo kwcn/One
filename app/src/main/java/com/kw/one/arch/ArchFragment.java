@@ -29,6 +29,8 @@ public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBindin
         mViewModel.mWeather.response().observe(this, rp -> {
             try {
                 mBinding.weather.setText(rp.data.weather);
+            } catch (Exception e) {
+                mBinding.weather.setText("");
             } finally {
                 cutRefreshTask(mViewModel.mWeather.toString());
             }
@@ -36,23 +38,35 @@ public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBindin
         mViewModel.mWeather.request().setValue("天津");
         // Retrofit访问
         mViewModel.mRetrofitWeather.response().observe(this, rp -> {
-            if (rp == null) return;
-            mBinding.weather2.setText(rp.data.weather);
-            cutRefreshTask(mViewModel.mRetrofitWeather.toString());
+            try {
+                mBinding.weather2.setText(rp.data.weather);
+            } catch (Exception e) {
+                mBinding.weather2.setText("");
+            } finally {
+                cutRefreshTask(mViewModel.mRetrofitWeather.toString());
+            }
         });
         mViewModel.mRetrofitWeather.request().setValue("天津");
         // DB访问
         mViewModel.mWeatherDbDataSource.response().observe(this, rp -> {
-            if (rp == null) return;
-            mBinding.weatherDb.setText(rp.temp);
-            cutRefreshTask(mViewModel.mWeatherDbDataSource.toString());
+            try {
+                mBinding.weatherDb.setText(rp.temp);
+            } catch (Exception e) {
+                mBinding.weatherDb.setText("");
+            } finally {
+                cutRefreshTask(mViewModel.mWeatherDbDataSource.toString());
+            }
         });
         mViewModel.mWeatherDbDataSource.request().setValue("天津");
         // DB+Net访问
         mViewModel.mWeatherMixDataSource.response().observe(this, rp -> {
-            if (rp == null) return;
-            mBinding.weatherDbNet.setText(rp.temp);
-            cutRefreshTask(mViewModel.mWeatherMixDataSource.toString());
+            try {
+                mBinding.weatherDbNet.setText(rp.temp);
+            } catch (Exception e) {
+                mBinding.weatherDbNet.setText("");
+            } finally {
+                cutRefreshTask(mViewModel.mWeatherMixDataSource.toString());
+            }
         });
         mViewModel.mWeatherMixDataSource.request().setValue("天津");
     }
