@@ -13,9 +13,9 @@ import com.kw.one.db.DBManager;
  * @author Kang Wei
  * @date 2019/10/30
  */
-public class WeatherDbDataSource extends IRoomDataSource<String, WeatherEntity> {
+public class WeatherRoomSource extends IRoomDataSource<String, WeatherEntity> {
     private WeatherDao mDao;
-    public WeatherDbDataSource(@NonNull Application application) {
+    public WeatherRoomSource(@NonNull Application application) {
         super(application);
         mDao = DBManager.getInstance(mApplication).mDatabase.mWeatherDao();
     }

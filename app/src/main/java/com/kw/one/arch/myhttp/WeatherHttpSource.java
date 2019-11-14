@@ -15,7 +15,7 @@ import com.kw.one.repo.bean.CurWeather;
  * @author Kang Wei
  * @date 2019/10/29
  */
-public class WeatherSource extends BaseDataSource<String, CurWeather> {
+public class WeatherHttpSource extends BaseDataSource<String, CurWeather> {
     private static final String BASE_URL = "http://www.mxnzp.com/api/weather/current/";
 
     @Override

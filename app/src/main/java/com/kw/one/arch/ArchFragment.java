@@ -8,7 +8,11 @@ import androidx.lifecycle.ViewModelProviders;
 import com.kw.arch.aspect.CheckNet;
 import com.kw.arch.view.BaseFragment;
 import com.kw.one.R;
+import com.kw.one.arch.mix.WeatherMixDataSource;
+import com.kw.one.arch.myhttp.WeatherHttpSource;
+import com.kw.one.arch.retrofit.WeatherRetrofitSource;
 import com.kw.one.arch.room.WeatherEntity;
+import com.kw.one.arch.room.WeatherRoomSource;
 import com.kw.one.databinding.FragmentArchBinding;
 
 /**
@@ -17,9 +21,18 @@ import com.kw.one.databinding.FragmentArchBinding;
  */
 public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBinding> {
     private static final int TASK_COUNT = 4;
+    private WeatherHttpSource mHttpSource;
+    private WeatherRetrofitSource mRetrofitSource;
+    private WeatherRoomSource mRoomSource;
+    private WeatherMixDataSource mMixDataSource;
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mHttpSource = mViewModel.mHttpSource;
+        mRetrofitSource = mViewModel.mRetrofitSource;
+        mRoomSource = mViewModel.mRoomSource;
+        mMixDataSource = mViewModel.mMixDataSource;
         startLoading(TASK_COUNT);
         bindUI();
         request();
@@ -27,58 +40,54 @@ public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBindin
     }
 
     private void bindUI() {
-        // 普通http
-        mViewModel.mWeather.response().observe(this, rp -> {
+        mHttpSource.response().observe(this, rp -> {
             try {
                 mBinding.weather.setText(rp.data.weather);
-                loadedOneTask(mViewModel.mWeather, true);
+                loadedOneTask(mHttpSource, true);
             } catch (Exception e) {
-                loadedOneTask(mViewModel.mWeather, true);
+                loadedOneTask(mHttpSource, false);
             }
         });
 
-        // Retrofit
-        mViewModel.mRetrofitWeather.response().observe(this, rp -> {
+        mRetrofitSource.response().observe(this, rp -> {
             try {
                 mBinding.weather2.setText(rp.data.weather);
-                loadedOneTask(mViewModel.mRetrofitWeather, true);
+                loadedOneTask(mRetrofitSource, true);
             } catch (Exception e) {
-                loadedOneTask(mViewModel.mRetrofitWeather, false);
+                loadedOneTask(mRetrofitSource, false);
             }
         });
 
-        // DB访问
-        mViewModel.mWeatherDbDataSource.response().observe(this, rp -> {
+        mRoomSource.response().observe(this, rp -> {
             try {
                 mBinding.weatherDb.setText(rp.temp);
-                loadedOneTask(mViewModel.mWeatherDbDataSource, true);
+                loadedOneTask(mRoomSource, true);
             } catch (Exception e) {
-                loadedOneTask(mViewModel.mWeatherDbDataSource, false);
+                loadedOneTask(mRoomSource, false);
             }
         });
 
-        // DB+Net访问
-        mViewModel.mWeatherMixDataSource.response().observe(this, rp -> {
+        mMixDataSource.response().observe(this, rp -> {
             try {
                 mBinding.weatherDbNet.setText(rp.temp);
-                loadedOneTask(mViewModel.mWeatherMixDataSource, true);
+                loadedOneTask(mMixDataSource, true);
             } catch (Exception e) {
-                loadedOneTask(mViewModel.mWeatherMixDataSource, false);
+                loadedOneTask(mMixDataSource, false);
             }
         });
     }
 
     private void setEvent() {
-        mBinding.fetch.setOnClickListener(v -> {
-            startLoading(TASK_COUNT);
-            request();
-        });
-
         mBinding.updateDb.setOnClickListener(v -> {
             WeatherEntity entity = new WeatherEntity();
             entity.address = "天津";
             entity.temp = System.currentTimeMillis() + "";
-            mViewModel.mWeatherDbDataSource.update(entity);
+            mRoomSource.update(entity);
+        });
+
+        mBinding.fetch.setOnClickListener(v -> {
+            startLoading(TASK_COUNT);
+            request();
         });
 
         mBinding.swipeRefresh.setOnRefreshListener(() -> {
@@ -87,24 +96,26 @@ public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBindin
             request();
         });
 
-        // 无效数据，重试按钮
+        // 重试按钮
         mLoadHolder.withRetry(status -> {
             startLoading(TASK_COUNT);
             request();
         });
     }
 
+    // 设置网络状态检查
     @CheckNet
     private void request() {
-        mViewModel.mWeather.request().setValue("天津");
-        mViewModel.mRetrofitWeather.request().setValue("天津");
-        mViewModel.mWeatherDbDataSource.request().setValue("天津");
-        mViewModel.mWeatherMixDataSource.request().setValue("天津");
+        mHttpSource.request().setValue("天津");
+        mRetrofitSource.request().setValue("天津");
+        mRoomSource.request().setValue("天津");
+        mMixDataSource.request().setValue("天津");
     }
 
     @Override
     public void onLoaded(boolean isValid) {
         super.onLoaded(isValid);
+        // 设置下拉刷新
         mBinding.swipeRefresh.setRefreshing(false);
     }
 

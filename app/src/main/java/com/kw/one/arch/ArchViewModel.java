@@ -7,9 +7,9 @@ import androidx.annotation.NonNull;
 import com.kw.arch.annotation.Source;
 import com.kw.arch.viewmodel.BaseViewModel;
 import com.kw.one.arch.mix.WeatherMixDataSource;
-import com.kw.one.arch.myhttp.WeatherSource;
+import com.kw.one.arch.myhttp.WeatherHttpSource;
 import com.kw.one.arch.retrofit.WeatherRetrofitSource;
-import com.kw.one.arch.room.WeatherDbDataSource;
+import com.kw.one.arch.room.WeatherRoomSource;
 
 /**
  * @author Kang Wei
@@ -17,13 +17,13 @@ import com.kw.one.arch.room.WeatherDbDataSource;
  */
 public class ArchViewModel extends BaseViewModel {
     @Source
-    public WeatherSource mWeather;
+    public WeatherHttpSource mHttpSource;
     @Source
-    public WeatherRetrofitSource mRetrofitWeather;
+    public WeatherRetrofitSource mRetrofitSource;
     @Source
-    public WeatherDbDataSource mWeatherDbDataSource;
+    public WeatherRoomSource mRoomSource;
     @Source
-    WeatherMixDataSource mWeatherMixDataSource;
+    WeatherMixDataSource mMixDataSource;
 
     public ArchViewModel(@NonNull Application application) {
         super(application);
