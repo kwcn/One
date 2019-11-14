@@ -28,7 +28,10 @@ public class DefaultGLoadingAdapter implements GLoading.Adapter {
                 View failedView =
                         LayoutInflater.from(holder.getContext()).inflate(R.layout.fail_loading_page, holder.getWrapper(), false);
                 failedView.findViewById(R.id.retry).setOnClickListener(v -> {
-                    holder.getRetryTask().retry(STATUS_LOAD_FAILED);
+                    GLoading.RetryLoad retryTask = holder.getRetryTask();
+                    if (retryTask != null) {
+                        holder.getRetryTask().retry(STATUS_LOAD_FAILED);
+                    }
                 });
                 return failedView;
             default:

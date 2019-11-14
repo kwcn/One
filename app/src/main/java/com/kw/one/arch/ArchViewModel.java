@@ -23,7 +23,7 @@ public class ArchViewModel extends BaseViewModel {
     @Source
     public WeatherRoomSource mRoomSource;
     @Source
-    WeatherMixDataSource mMixDataSource;
+    public WeatherMixDataSource mMixDataSource;
 
     public ArchViewModel(@NonNull Application application) {
         super(application);

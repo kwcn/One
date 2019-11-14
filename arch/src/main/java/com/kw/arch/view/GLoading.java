@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 
+import androidx.annotation.Nullable;
+
 public class GLoading {
     public static final int STATUS_LOADING = 1;
     public static final int STATUS_LOAD_SUCCESS = 2;
@@ -183,6 +185,7 @@ public class GLoading {
             return mWrapper;
         }
 
+        @Nullable
         public RetryLoad getRetryTask() {
             return mRetryTask;
         }

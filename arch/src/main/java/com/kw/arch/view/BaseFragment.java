@@ -25,6 +25,13 @@ public abstract class BaseFragment<VM extends BaseViewModel, ViewBinding extends
     protected VM mViewModel;
     protected GLoading.Holder mLoadHolder;
     protected LoadedController mLoadedController;
+    protected Context mContext;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
 
     @Nullable
     @Override
@@ -34,6 +41,7 @@ public abstract class BaseFragment<VM extends BaseViewModel, ViewBinding extends
         mBinding = DataBindingUtil.inflate(inflater, getLayoutId(), null, false);
         mLoadHolder = GLoading.getDefault().wrap(mBinding.getRoot());
         mLoadedController = new LoadedController(this);
+        mLoadHolder.withRetry(status -> reload());
         return mLoadHolder.getWrapper();
     }
 
@@ -41,7 +49,16 @@ public abstract class BaseFragment<VM extends BaseViewModel, ViewBinding extends
 
     protected abstract int getLayoutId();
 
-    // 所有任务都完成后执行该回调方法
+    /**
+     * 重新加载数据
+     */
+    protected abstract void reload();
+
+    /**
+     * 数据加载结果
+     *
+     * @param isValid 是否获得有效数据
+     */
     @Override
     public void onLoaded(boolean isValid) {
         if (isValid) {
@@ -51,13 +68,22 @@ public abstract class BaseFragment<VM extends BaseViewModel, ViewBinding extends
         }
     }
 
-    // 开启加载任务
+    /**
+     * 开启加载任务
+     *
+     * @param taskCount 任务数目
+     */
     protected void startLoading(int taskCount) {
         mLoadHolder.showLoading();
         mLoadedController.start(taskCount);
     }
 
-    // 每当有任务完成应调用该方法
+    /**
+     * 每当有任务完成应调用该方法
+     *
+     * @param taskKey 任务唯一标识值
+     * @param isValid 是否获得有效数据
+     */
     protected void loadedOneTask(String taskKey, boolean isValid) {
         mLoadedController.loadedOneTask(taskKey, isValid);
     }
@@ -69,9 +95,12 @@ public abstract class BaseFragment<VM extends BaseViewModel, ViewBinding extends
     @NonNull
     @Override
     public Context onContext() {
-        return getContext();
+        return mContext;
     }
 
+    /**
+     * 网络连接失败
+     */
     @Override
     public void onFailNet() {
         mLoadHolder.showLoadFailed();

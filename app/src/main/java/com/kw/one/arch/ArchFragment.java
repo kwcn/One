@@ -3,7 +3,7 @@ package com.kw.one.arch;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.kw.arch.aspect.CheckNet;
 import com.kw.arch.view.BaseFragment;
@@ -85,22 +85,11 @@ public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBindin
             mRoomSource.update(entity);
         });
 
-        mBinding.fetch.setOnClickListener(v -> {
-            startLoading(TASK_COUNT);
-            request();
-        });
+        // 界面上的获取按钮
+        mBinding.fetch.setOnClickListener(v -> reload());
 
-        mBinding.swipeRefresh.setOnRefreshListener(() -> {
-            // 不显示刷新界面，只显示下拉刷新进度条
-            mLoadedController.start(TASK_COUNT);
-            request();
-        });
-
-        // 重试按钮
-        mLoadHolder.withRetry(status -> {
-            startLoading(TASK_COUNT);
-            request();
-        });
+        // 下拉刷新
+        mBinding.swipeRefresh.setOnRefreshListener(this::reload);
     }
 
     // 设置网络状态检查
@@ -115,17 +104,23 @@ public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBindin
     @Override
     public void onLoaded(boolean isValid) {
         super.onLoaded(isValid);
-        // 设置下拉刷新
+        // 设置结束下拉刷新
         mBinding.swipeRefresh.setRefreshing(false);
     }
 
     @Override
     protected ArchViewModel getVModel() {
-        return ViewModelProviders.of(this).get(ArchViewModel.class);
+        return new ViewModelProvider(this).get(ArchViewModel.class);
     }
 
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_arch;
+    }
+
+    @Override
+    protected void reload() {
+        startLoading(TASK_COUNT);
+        request();
     }
 }

@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
         <!--android:name="com.kw.one.arch.ArchFragment"-->
         <!--android:name="com.kw.one.ui.HomeFragment"-->
+        <!--android:name="com.kw.one.arch.recyclerview.ArticleFragment"-->
         <fragment
             android:id="@+id/fragment1"
-            android:name="com.kw.one.arch.ArchFragment"
+            android:name="com.kw.one.ui.HomeFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </FrameLayout>
+            android:layout_height="320dp" />
+
+        <fragment
+            android:id="@+id/fragment2"
+            android:name="com.kw.one.arch.recyclerview.ArticleFragment"
+            android:layout_width="match_parent"
+            android:layout_height="200dp" />
+    </LinearLayout>
 </layout>
