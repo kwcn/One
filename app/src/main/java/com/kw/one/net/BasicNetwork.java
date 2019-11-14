@@ -61,6 +61,10 @@ public class BasicNetwork implements NetWork {
             if (responseCode >= 200 && responseCode < 300) {
                 ByteArrayOutputStream outputStream = acquireDataStream(urlConnection);
                 return Response.success(outputStream.toByteArray());
+            } else if (responseCode == 301 || responseCode == 302) {
+                // 重定向
+                request.mUrl = urlConnection.getHeaderField("Location");
+                return performRequest(request);
             } else {
                 return Response.error("error responseCode:" + responseCode);
             }
