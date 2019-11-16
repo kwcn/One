@@ -58,18 +58,18 @@ public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBindin
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel.mWeatherProvider.getLiveData().observe(this, weather -> {
+        mViewModel.mWeatherProvider.getLiveData().observe(getViewLifecycleOwner(), weather -> {
             mBinding.weather.setWeather(weather);
             // 用于控制第一次进入时进度条的显示
             cutFirstRefreshTask();
         });
 
-        mViewModel.mCalendarProvider.getLiveData().observe(this, calendar -> {
+        mViewModel.mCalendarProvider.getLiveData().observe(getViewLifecycleOwner(), calendar -> {
             mBinding.calendar.setCalendar(calendar);
             cutFirstRefreshTask();
         });
 
-        mViewModel.mBusProvider.getLiveData().observe(this, bus -> {
+        mViewModel.mBusProvider.getLiveData().observe(getViewLifecycleOwner(), bus -> {
             mBinding.bus.bus.setText(HomeFragment.this.getBusTime(bus));
             cutFirstRefreshTask();
         });
@@ -78,7 +78,7 @@ public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBindin
                 BusRepo.bus_125_1_url);
 
         // 获取本地存储的城市内容,且仅载入一次
-        OneUtils.transformSingleObserver(mMapHelper.getLiveValue(CITY_KEY)).observe(this, city -> {
+        OneUtils.transformSingleObserver(mMapHelper.getLiveValue(CITY_KEY)).observe(getViewLifecycleOwner(), city -> {
             if (!TextUtils.isEmpty(city)) {
                 mViewModel.mWeatherProvider.setParam(city);
             }

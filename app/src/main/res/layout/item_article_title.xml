@@ -3,18 +3,13 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/article_id"
+            android:id="@+id/article_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#030000" />
+            android:text="标题栏" />
     </LinearLayout>
 </layout>
+

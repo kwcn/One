@@ -8,16 +8,22 @@
         <!--android:name="com.kw.one.arch.ArchFragment"-->
         <!--android:name="com.kw.one.ui.HomeFragment"-->
         <!--android:name="com.kw.one.arch.recyclerview.ArticleFragment"-->
-        <fragment
-            android:id="@+id/fragment1"
-            android:name="com.kw.one.ui.HomeFragment"
-            android:layout_width="match_parent"
-            android:layout_height="320dp" />
+        <!--<fragment-->
+        <!--android:id="@+id/fragment1"-->
+        <!--android:name="com.kw.one.ui.HomeFragment"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent" />-->
+
+        <!--<fragment-->
+            <!--android:id="@+id/fragment3"-->
+            <!--android:name="com.kw.one.arch.ArchFragment"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent" />-->
 
         <fragment
             android:id="@+id/fragment2"
             android:name="com.kw.one.arch.recyclerview.ArticleFragment"
             android:layout_width="match_parent"
-            android:layout_height="200dp" />
+            android:layout_height="match_parent" />
     </LinearLayout>
 </layout>
