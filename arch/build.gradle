@@ -86,4 +86,5 @@ dependencies {
     api 'com.squareup.retrofit2:retrofit:2.5.0'
     api 'com.squareup.retrofit2:converter-gson:2.5.0'
     api 'org.aspectj:aspectjrt:1.8.9'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
 }

@@ -8,11 +8,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.kw.arch.aspect.CheckNet;
 import com.kw.arch.view.BaseFragment;
+import com.kw.arch.view.recycler.ItemController;
+import com.kw.arch.view.recycler.MultiTypeAdapter;
 import com.kw.one.R;
-import com.kw.one.arch.recyclerview.base.ArticleTitleView;
-import com.kw.one.arch.recyclerview.base.ArticleView;
-import com.kw.one.arch.recyclerview.base.DataBindingAdapter;
-import com.kw.one.arch.recyclerview.base.ItemView;
 import com.kw.one.databinding.FragmentArticleListBinding;
 
 import java.util.ArrayList;
@@ -25,9 +23,9 @@ import java.util.List;
 public class ArticleFragment extends BaseFragment<ArticleViewModel, FragmentArticleListBinding> {
     private static final int TASK_COUNT = 1;
     //    private ArticleAdapter mAdapter;
-//    private ArticleAdapterV2 mAdapterV2;
-    private DataBindingAdapter mBindingAdapter;
+    private MultiTypeAdapter mBindingAdapter;
     private ArticleDataSource mArticleSource;
+    private ArticleController mArticleView;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -37,13 +35,15 @@ public class ArticleFragment extends BaseFragment<ArticleViewModel, FragmentArti
 //        mBinding.recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 //        mBinding.recyclerView.setAdapter(mAdapter);
 
-//        mAdapterV2 = new ArticleAdapterV2();
-//        mBinding.recyclerView2.setLayoutManager(new LinearLayoutManager(mContext));
-//        mBinding.recyclerView2.setAdapter(mAdapterV2);
-        mBindingAdapter = new DataBindingAdapter();
+        mBindingAdapter = new MultiTypeAdapter();
         mBinding.recyclerView2.setLayoutManager(new LinearLayoutManager(mContext));
         mBinding.recyclerView2.setAdapter(mBindingAdapter);
         mArticleSource = mViewModel.mArticleSource;
+        List<ItemController> itemControllers = new ArrayList<>();
+        itemControllers.add(new ArticleTitleController());
+        mArticleView = new ArticleController();
+        itemControllers.add(mArticleView);
+        mBindingAdapter.setItemControllers(itemControllers);
         event();
         bindUI();
     }
@@ -51,14 +51,8 @@ public class ArticleFragment extends BaseFragment<ArticleViewModel, FragmentArti
     private void bindUI() {
         mArticleSource.response().observe(getViewLifecycleOwner(), val -> {
             try {
-//                mAdapter.setNewData(val.data.datas);
-//                mAdapterV2.setList(val.data.datas);
-                List<ItemView> itemViews = new ArrayList<>();
-                itemViews.add(new ArticleTitleView());
-                val.data.datas.forEach(articleBean -> {
-                    itemViews.add(new ArticleView(articleBean));
-                    mBindingAdapter.setItemViews(itemViews);
-                });
+                mArticleView.addData(val.data.datas);
+                mArticleView.addData(val.data.datas);
                 loadedOneTask(mArticleSource, true);
             } catch (Exception e) {
                 loadedOneTask(mArticleSource, false);
