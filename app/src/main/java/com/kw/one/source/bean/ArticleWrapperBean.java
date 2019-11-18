@@ -1,4 +1,4 @@
-package com.kw.one.arch.recyclerview;
+package com.kw.one.source.bean;
 
 import java.util.List;
 

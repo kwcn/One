@@ -1,6 +1,6 @@
 package com.kw.one.arch.retrofit;
 
-import com.kw.one.arch.recyclerview.ArticleWrapperBean;
+import com.kw.one.source.bean.ArticleWrapperBean;
 import com.kw.one.source.bean.Calendar;
 import com.kw.one.source.bean.CurWeather;
 

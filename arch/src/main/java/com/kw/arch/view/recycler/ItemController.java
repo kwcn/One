@@ -16,7 +16,8 @@ public abstract class ItemController<DataBinding extends ViewDataBinding> {
      *
      * @param holder
      */
-    protected abstract void onCreated(MultiTypeAdapter.DataBindingViewHolder<DataBinding> holder);
+    protected void onCreated(MultiTypeAdapter.DataBindingViewHolder<DataBinding> holder) {
+    }
 
     protected abstract void onBind(MultiTypeAdapter.DataBindingViewHolder<DataBinding> holder,
                                    int position);

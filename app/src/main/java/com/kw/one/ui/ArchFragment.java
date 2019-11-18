@@ -1,4 +1,4 @@
-package com.kw.one.arch;
+package com.kw.one.ui;
 
 import android.os.Bundle;
 
@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.kw.arch.aspect.CheckNet;
 import com.kw.arch.view.BaseFragment;
 import com.kw.one.R;
+import com.kw.one.viewmodel.ArchViewModel;
 import com.kw.one.arch.mix.WeatherMixDataSource;
 import com.kw.one.arch.myhttp.WeatherHttpSource;
 import com.kw.one.arch.retrofit.WeatherRetrofitSource;

@@ -1,4 +1,4 @@
-package com.kw.one.arch.recyclerview;
+package com.kw.one.viewmodel;
 
 import android.app.Application;
 
@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.kw.arch.annotation.Source;
 import com.kw.arch.viewmodel.BaseViewModel;
+import com.kw.one.source.ArticleDataSource;
 
 /**
  * @author Kang Wei

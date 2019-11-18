@@ -18,13 +18,13 @@
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/fragment3"
-                android:name="com.kw.one.arch.ArchFragment"
+                android:name="com.kw.one.ui.ArchFragment"
                 android:layout_width="match_parent"
                 android:layout_height="200dp" />
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/fragment2"
-                android:name="com.kw.one.arch.recyclerview.ArticleFragment"
+                android:name="com.kw.one.ui.ArticleFragment"
                 android:layout_width="match_parent"
                 android:layout_height="300dp" />
         </LinearLayout>

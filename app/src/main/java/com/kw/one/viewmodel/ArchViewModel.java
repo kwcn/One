@@ -1,4 +1,4 @@
-package com.kw.one.arch;
+package com.kw.one.viewmodel;
 
 import android.app.Application;
 

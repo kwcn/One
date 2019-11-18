@@ -7,6 +7,7 @@ import com.kw.arch.view.recycler.DataBindItemController;
 import com.kw.arch.view.recycler.MultiTypeAdapter;
 import com.kw.one.R;
 import com.kw.one.databinding.ItemArticleBinding;
+import com.kw.one.source.bean.ArticleWrapperBean;
 
 /**
  * @author Kang Wei

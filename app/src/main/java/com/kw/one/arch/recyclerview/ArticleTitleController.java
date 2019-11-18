@@ -13,11 +13,6 @@ public class ArticleTitleController extends ItemController<ItemArticleTitleBindi
     private static final int VIEW_TYPE = 1;
 
     @Override
-    protected void onCreated(MultiTypeAdapter.DataBindingViewHolder<ItemArticleTitleBinding> holder) {
-
-    }
-
-    @Override
     protected void onBind(MultiTypeAdapter.DataBindingViewHolder<ItemArticleTitleBinding> holder,
                           int position) {
         holder.mBinding.articleTitle.setText("标题栏1");
