@@ -11,7 +11,7 @@ import com.kw.one.arch.retrofit.WebService;
 import com.kw.one.arch.room.WeatherDao;
 import com.kw.one.arch.room.WeatherEntity;
 import com.kw.one.db.DBManager;
-import com.kw.one.repo.bean.CurWeather;
+import com.kw.one.source.bean.CurWeather;
 
 import retrofit2.Call;
 
@@ -31,7 +31,7 @@ public class WeatherMixDataSource extends IRetrofitAndRoomDataSource<String, Cur
     @NonNull
     @Override
     public Call<CurWeather> getCall(@Nullable String request) {
-        return WebService.getInstance().mWebService.getWeather(request);
+        return WebService.getInstance().getWeather(request);
     }
 
     @Override

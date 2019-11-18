@@ -6,7 +6,7 @@
 
         <variable
             name="weather"
-            type="com.kw.one.repo.bean.CurWeather" />
+            type="com.kw.one.source.bean.CurWeather" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -3,29 +3,13 @@ package com.kw.one;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModel;
+import androidx.appcompat.app.AppCompatActivity;
 
-import com.kw.one.ui.base.BaseActivity;
+public class MainActivity extends AppCompatActivity {
 
-public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_main;
-    }
-
-    @Nullable
-    @Override
-    protected ViewModel getViewMode() {
-        return null;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+        setContentView(R.layout.activity_main);
     }
 }

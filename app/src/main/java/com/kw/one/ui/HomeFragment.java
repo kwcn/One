@@ -1,24 +1,26 @@
 package com.kw.one.ui;
 
-import android.content.Context;
+import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
-import com.kw.one.OneUtils;
+import com.kw.arch.aspect.CheckNet;
+import com.kw.arch.view.BaseFragment;
 import com.kw.one.R;
 import com.kw.one.databinding.FragmentHomeBinding;
 import com.kw.one.db.DiskMapHelper;
-import com.kw.one.repo.BusRepo;
-import com.kw.one.repo.bean.Bus;
-import com.kw.one.ui.base.BaseFragment;
+import com.kw.one.source.bean.Bus;
+import com.kw.one.source.BusSource;
+import com.kw.one.source.CalendarSource;
+import com.kw.one.source.WeatherSource;
 import com.kw.one.viewmodel.HomeViewModel;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import static com.kw.one.db.DiskMapHelper.CITY_KEY;
 
@@ -29,60 +31,69 @@ import static com.kw.one.db.DiskMapHelper.CITY_KEY;
 public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBinding> {
     private static final int TASK_COUNT = 3;
     private DiskMapHelper mMapHelper;
-    private int mFirstLoadTaskCount;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        mMapHelper = DiskMapHelper.getInstance(context);
-        mFirstLoadTaskCount = TASK_COUNT;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        mBinding.weather.query.setOnClickListener(v -> {
-            String city = mBinding.weather.editQuery.getText().toString();
-            // 记录用户搜索历史
-            mMapHelper.putValue(CITY_KEY, city);
-            mViewModel.mWeatherProvider.setParam(city);
-        });
-
-        setRefresh(TASK_COUNT, () -> {
-            mViewModel.mBusProvider.reload(bus -> cutRefreshTask());
-            mViewModel.mCalendarProvider.reload(calendar -> cutRefreshTask());
-            mViewModel.mWeatherProvider.reload(curWeather -> cutRefreshTask());
-        });
-    }
+    private WeatherSource mWeather;
+    private CalendarSource mCalendar;
+    private BusSource mBus;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel.mWeatherProvider.getLiveData().observe(getViewLifecycleOwner(), weather -> {
-            mBinding.weather.setWeather(weather);
-            // 用于控制第一次进入时进度条的显示
-            cutFirstRefreshTask();
-        });
+        mMapHelper = DiskMapHelper.getInstance(mContext);
+        mWeather = mViewModel.mWeather;
+        mCalendar = mViewModel.mCalendar;
+        mBus = mViewModel.mBus;
+        startLoading(TASK_COUNT);
+        bindUI();
+        bindEvent();
+    }
 
-        mViewModel.mCalendarProvider.getLiveData().observe(getViewLifecycleOwner(), calendar -> {
-            mBinding.calendar.setCalendar(calendar);
-            cutFirstRefreshTask();
-        });
-
-        mViewModel.mBusProvider.getLiveData().observe(getViewLifecycleOwner(), bus -> {
-            mBinding.bus.bus.setText(HomeFragment.this.getBusTime(bus));
-            cutFirstRefreshTask();
-        });
-
-        mViewModel.mBusProvider.setParam(isBus1Time() ? BusRepo.bus_125_0_url :
-                BusRepo.bus_125_1_url);
-
-        // 获取本地存储的城市内容,且仅载入一次
-        OneUtils.transformSingleObserver(mMapHelper.getLiveValue(CITY_KEY)).observe(getViewLifecycleOwner(), city -> {
-            if (!TextUtils.isEmpty(city)) {
-                mViewModel.mWeatherProvider.setParam(city);
+    private void bindUI() {
+        mWeather.response().observe(getViewLifecycleOwner(), curWeather -> {
+            if (curWeather != null) {
+                mBinding.weather.setWeather(curWeather);
+                loadedOneTask(mWeather, true);
+            } else {
+                loadedOneTask(mWeather, false);
             }
         });
+
+        mCalendar.response().observe(getViewLifecycleOwner(), calendar -> {
+            if (calendar != null) {
+                mBinding.calendar.setCalendar(calendar);
+                loadedOneTask(mCalendar, true);
+            } else {
+                loadedOneTask(mCalendar, false);
+            }
+        });
+
+        mBus.response().observe(getViewLifecycleOwner(), bus -> {
+            if (bus != null) {
+                mBinding.bus.bus.setText(getBusTime(bus));
+                loadedOneTask(mBus, true);
+            } else {
+                loadedOneTask(mBus, false);
+            }
+        });
+
+        mMapHelper.getLiveValue(CITY_KEY).observe(getViewLifecycleOwner(), city -> {
+            mWeather.request().setValue(city);
+        });
+        mCalendar.request().setValue(getCurTime());
+        mBus.request().setValue(isBus0Time() ? BusSource.bus_125_0_url : BusSource.bus_125_1_url);
+    }
+
+    private void bindEvent() {
+        mBinding.weather.query.setOnClickListener(v -> {
+            String city = mBinding.weather.editQuery.getText().toString();
+            mMapHelper.putValue(CITY_KEY, city);
+        });
+
+        mBinding.swipeRefresh.setOnRefreshListener(this::onReload);
+    }
+
+    @Override
+    protected HomeViewModel getVModel() {
+        return new ViewModelProvider(this).get(HomeViewModel.class);
     }
 
     @Override
@@ -90,10 +101,19 @@ public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBindin
         return R.layout.fragment_home;
     }
 
-    @Nullable
+    @CheckNet
     @Override
-    protected HomeViewModel getViewModel() {
-        return ViewModelProviders.of(this).get(HomeViewModel.class);
+    protected void onReload() {
+        startLoading(TASK_COUNT);
+        mWeather.onReload(null);
+        mCalendar.request().setValue(getCurTime());
+        mBus.request().setValue(isBus0Time() ? BusSource.bus_125_0_url : BusSource.bus_125_1_url);
+    }
+
+    @Override
+    public void onLoaded(boolean isValid) {
+        super.onLoaded(isValid);
+        mBinding.swipeRefresh.setRefreshing(false);
     }
 
     @NonNull
@@ -115,19 +135,16 @@ public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBindin
             time = getString(R.string.no_data);
             remainTime = "";
         }
-        return getString(isBus1Time() ? R.string.bus_1 : R.string.bus_2, time, remainTime);
+        return getString(isBus0Time() ? R.string.bus_1 : R.string.bus_2, time, remainTime);
     }
 
-    private boolean isBus1Time() {
+    private boolean isBus0Time() {
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         return hour > 0 && hour < 12;
     }
 
-    private void cutFirstRefreshTask() {
-        if (mFirstLoadTaskCount > 0) {
-            cutRefreshTask();
-            mFirstLoadTaskCount--;
-        }
+    private String getCurTime() {
+        return new SimpleDateFormat("yyyyMMdd").format(new Date(System.currentTimeMillis()));
     }
 }

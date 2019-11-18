@@ -1,21 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <LinearLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <include
-            android:id="@+id/weather"
-            layout="@layout/card_weather" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <include
-            android:id="@+id/calendar"
-            layout="@layout/card_calendar" />
+            <include
+                android:id="@+id/weather"
+                layout="@layout/card_weather" />
 
-        <include
-            android:id="@+id/bus"
-            layout="@layout/card_bus" />
-    </LinearLayout>
+            <include
+                android:id="@+id/calendar"
+                layout="@layout/card_calendar" />
+
+            <include
+                android:id="@+id/bus"
+                layout="@layout/card_bus" />
+        </LinearLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>

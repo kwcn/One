@@ -10,8 +10,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class WebService {
     public IWebService mWebService;
 
-    public static WebService getInstance() {
-        return InWebService.inWebService;
+    public static IWebService getInstance() {
+        return InWebService.inWebService.mWebService;
     }
 
     private static class InWebService {

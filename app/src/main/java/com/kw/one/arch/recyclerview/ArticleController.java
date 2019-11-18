@@ -27,7 +27,7 @@ public class ArticleController extends DataBindItemController<ArticleWrapperBean
         holder.mBinding.articleId.setOnClickListener(v -> {
             Log.i("kwdy", "onCreated child: " + ((TextView) v).getText());
             int position = getSelfPosition(holder.getAdapterPosition());
-            if (position > 0) {
+            if (position >= 0) {
                 remove(position);
             }
         });

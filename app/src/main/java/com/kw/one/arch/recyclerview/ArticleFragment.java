@@ -51,8 +51,7 @@ public class ArticleFragment extends BaseFragment<ArticleViewModel, FragmentArti
     private void bindUI() {
         mArticleSource.response().observe(getViewLifecycleOwner(), val -> {
             try {
-                mArticleView.addData(val.data.datas);
-                mArticleView.addData(val.data.datas);
+                mArticleView.setNewData(val.data.datas);
                 loadedOneTask(mArticleSource, true);
             } catch (Exception e) {
                 loadedOneTask(mArticleSource, false);
@@ -62,7 +61,7 @@ public class ArticleFragment extends BaseFragment<ArticleViewModel, FragmentArti
     }
 
     private void event() {
-        mBinding.swipeRefresh.setOnRefreshListener(this::reload);
+        mBinding.swipeRefresh.setOnRefreshListener(this::onReload);
     }
 
     @Override
@@ -83,7 +82,7 @@ public class ArticleFragment extends BaseFragment<ArticleViewModel, FragmentArti
 
     @CheckNet
     @Override
-    protected void reload() {
+    protected void onReload() {
         startLoading(TASK_COUNT);
         mArticleSource.onReload(null);
     }

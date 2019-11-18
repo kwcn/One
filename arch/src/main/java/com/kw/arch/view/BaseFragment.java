@@ -41,7 +41,7 @@ public abstract class BaseFragment<VM extends BaseViewModel, ViewBinding extends
         mBinding = DataBindingUtil.inflate(inflater, getLayoutId(), null, false);
         mLoadHolder = GLoading.getDefault().wrap(mBinding.getRoot());
         mLoadedController = new LoadedController(this);
-        mLoadHolder.withRetry(status -> reload());
+        mLoadHolder.withRetry(status -> onReload());
         return mLoadHolder.getWrapper();
     }
 
@@ -50,9 +50,10 @@ public abstract class BaseFragment<VM extends BaseViewModel, ViewBinding extends
     protected abstract int getLayoutId();
 
     /**
-     * 重新加载数据
+     * 加载失败界面的重试按钮点击事件
      */
-    protected abstract void reload();
+    protected void onReload() {
+    }
 
     /**
      * 数据加载结果

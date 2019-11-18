@@ -1,4 +1,4 @@
-package com.kw.one.repo.bean;
+package com.kw.one.source.bean;
 
 /**
  * @author Kang Wei

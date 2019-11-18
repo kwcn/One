@@ -6,7 +6,7 @@
 
         <variable
             name="calendar"
-            type="com.kw.one.repo.bean.Calendar" />
+            type="com.kw.one.source.bean.Calendar" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

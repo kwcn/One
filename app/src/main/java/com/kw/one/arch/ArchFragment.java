@@ -40,7 +40,7 @@ public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBindin
     }
 
     private void bindUI() {
-        mHttpSource.response().observe(this, rp -> {
+        mHttpSource.response().observe(getViewLifecycleOwner(), rp -> {
             try {
                 mBinding.weather.setText(rp.data.weather);
                 loadedOneTask(mHttpSource, true);
@@ -49,7 +49,7 @@ public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBindin
             }
         });
 
-        mRetrofitSource.response().observe(this, rp -> {
+        mRetrofitSource.response().observe(getViewLifecycleOwner(), rp -> {
             try {
                 mBinding.weather2.setText(rp.data.weather);
                 loadedOneTask(mRetrofitSource, true);
@@ -58,7 +58,7 @@ public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBindin
             }
         });
 
-        mRoomSource.response().observe(this, rp -> {
+        mRoomSource.response().observe(getViewLifecycleOwner(), rp -> {
             try {
                 mBinding.weatherDb.setText(rp.temp);
                 loadedOneTask(mRoomSource, true);
@@ -67,7 +67,7 @@ public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBindin
             }
         });
 
-        mMixDataSource.response().observe(this, rp -> {
+        mMixDataSource.response().observe(getViewLifecycleOwner(), rp -> {
             try {
                 mBinding.weatherDbNet.setText(rp.temp);
                 loadedOneTask(mMixDataSource, true);
@@ -86,10 +86,10 @@ public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBindin
         });
 
         // 界面上的获取按钮
-        mBinding.fetch.setOnClickListener(v -> reload());
+        mBinding.fetch.setOnClickListener(v -> onReload());
 
         // 下拉刷新
-        mBinding.swipeRefresh.setOnRefreshListener(this::reload);
+        mBinding.swipeRefresh.setOnRefreshListener(this::onReload);
     }
 
     // 设置网络状态检查
@@ -119,7 +119,7 @@ public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBindin
     }
 
     @Override
-    protected void reload() {
+    protected void onReload() {
         startLoading(TASK_COUNT);
         request();
     }

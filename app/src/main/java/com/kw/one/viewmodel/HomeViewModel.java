@@ -1,31 +1,28 @@
 package com.kw.one.viewmodel;
 
-import androidx.lifecycle.ViewModel;
+import android.app.Application;
 
-import com.kw.one.repo.BusRepo;
-import com.kw.one.repo.CalendarRepo;
-import com.kw.one.repo.CurWeatherRepo;
-import com.kw.one.repo.base.MutableProvider;
-import com.kw.one.repo.base.Provider;
-import com.kw.one.repo.bean.Bus;
-import com.kw.one.repo.bean.Calendar;
-import com.kw.one.repo.bean.CurWeather;
+import androidx.annotation.NonNull;
+
+import com.kw.arch.annotation.Source;
+import com.kw.arch.viewmodel.BaseViewModel;
+import com.kw.one.source.BusSource;
+import com.kw.one.source.CalendarSource;
+import com.kw.one.source.WeatherSource;
 
 /**
  * @author Kang Wei
  * @date 2019/7/23
  */
-public class HomeViewModel extends ViewModel {
-    // 天气数据
-    public MutableProvider<String, CurWeather> mWeatherProvider;
-    // 日历数据
-    public Provider<Void, Calendar> mCalendarProvider;
-    // 公交车数据
-    public MutableProvider<String, Bus> mBusProvider;
+public class HomeViewModel extends BaseViewModel {
+    @Source
+    public BusSource mBus;
+    @Source
+    public CalendarSource mCalendar;
+    @Source
+    public WeatherSource mWeather;
 
-    public HomeViewModel() {
-        mWeatherProvider = new CurWeatherRepo().getMutableProvider();
-        mCalendarProvider = new CalendarRepo().getProvider(null);
-        mBusProvider = new BusRepo().getMutableProvider();
+    public HomeViewModel(@NonNull Application application) {
+        super(application);
     }
 }

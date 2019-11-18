@@ -16,6 +16,6 @@ public class ArticleDataSource extends IRetrofitDataSource<Void,ArticleWrapperBe
     @NonNull
     @Override
     public Call<ArticleWrapperBean> getCall(@Nullable Void request) {
-        return WebService.getInstance().mWebService.getArticleWrapperBean();
+        return WebService.getInstance().getArticleWrapperBean();
     }
 }

@@ -1,4 +1,4 @@
-package com.kw.one.repo.bean;
+package com.kw.one.source.bean;
 
 import java.util.List;
 

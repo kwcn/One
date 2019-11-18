@@ -9,7 +9,7 @@ import com.kw.one.net.ByteArrayConverter;
 import com.kw.one.net.HttpManager;
 import com.kw.one.net.Request;
 import com.kw.one.net.Response;
-import com.kw.one.repo.bean.CurWeather;
+import com.kw.one.source.bean.CurWeather;
 
 /**
  * @author Kang Wei
