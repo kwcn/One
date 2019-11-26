@@ -13,10 +13,10 @@ import com.kw.arch.view.BaseFragment;
 import com.kw.one.R;
 import com.kw.one.databinding.FragmentHomeBinding;
 import com.kw.one.db.DiskMapHelper;
-import com.kw.one.source.bean.Bus;
 import com.kw.one.source.BusSource;
 import com.kw.one.source.CalendarSource;
 import com.kw.one.source.WeatherSource;
+import com.kw.one.source.bean.Bus;
 import com.kw.one.viewmodel.HomeViewModel;
 
 import java.util.Calendar;
@@ -51,10 +51,8 @@ public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBindin
         mWeather.response().observe(getViewLifecycleOwner(), curWeather -> {
             if (curWeather != null) {
                 mBinding.weather.setWeather(curWeather);
-                loadedOneTask(mWeather, true);
-            } else {
-                loadedOneTask(mWeather, false);
             }
+            loadedOneTask(mWeather, true);
         });
 
         mCalendar.response().observe(getViewLifecycleOwner(), calendar -> {

@@ -8,13 +8,13 @@ import androidx.lifecycle.ViewModelProvider;
 import com.kw.arch.aspect.CheckNet;
 import com.kw.arch.view.BaseFragment;
 import com.kw.one.R;
-import com.kw.one.viewmodel.ArchViewModel;
 import com.kw.one.arch.mix.WeatherMixDataSource;
 import com.kw.one.arch.myhttp.WeatherHttpSource;
 import com.kw.one.arch.retrofit.WeatherRetrofitSource;
 import com.kw.one.arch.room.WeatherEntity;
 import com.kw.one.arch.room.WeatherRoomSource;
 import com.kw.one.databinding.FragmentArchBinding;
+import com.kw.one.viewmodel.ArchViewModel;
 
 /**
  * @author Kang Wei
@@ -22,6 +22,7 @@ import com.kw.one.databinding.FragmentArchBinding;
  */
 public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBinding> {
     private static final int TASK_COUNT = 4;
+    private static final String CITY = "天津市";
     private WeatherHttpSource mHttpSource;
     private WeatherRetrofitSource mRetrofitSource;
     private WeatherRoomSource mRoomSource;
@@ -81,7 +82,7 @@ public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBindin
     private void setEvent() {
         mBinding.updateDb.setOnClickListener(v -> {
             WeatherEntity entity = new WeatherEntity();
-            entity.address = "天津";
+            entity.address = CITY;
             entity.temp = System.currentTimeMillis() + "";
             mRoomSource.update(entity);
         });
@@ -96,10 +97,10 @@ public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBindin
     // 设置网络状态检查
     @CheckNet
     private void request() {
-        mHttpSource.request().setValue("天津");
-        mRetrofitSource.request().setValue("天津");
-        mRoomSource.request().setValue("天津");
-        mMixDataSource.request().setValue("天津");
+        mHttpSource.request().setValue(CITY);
+        mRetrofitSource.request().setValue(CITY);
+        mRoomSource.request().setValue(CITY);
+        mMixDataSource.request().setValue(CITY);
     }
 
     @Override
