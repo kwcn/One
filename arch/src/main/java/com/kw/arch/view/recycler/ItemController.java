@@ -32,7 +32,7 @@ public abstract class ItemController<DataBinding extends ViewDataBinding> {
     /**
      * 获取局部的position
      *
-     * @param position 全局原始position
+     * @param position 全局原始position,通常使用holder.getAdapterPosition()获取
      * @return 局部的position
      */
     protected int getSelfPosition(int position) {

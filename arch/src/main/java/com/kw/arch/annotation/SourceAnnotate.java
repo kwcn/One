@@ -1,5 +1,7 @@
 package com.kw.arch.annotation;
 
+import android.app.Application;
+
 import androidx.annotation.NonNull;
 
 import com.kw.arch.model.BaseApplicationDataSource;
@@ -7,6 +9,7 @@ import com.kw.arch.model.BaseDataSource;
 import com.kw.arch.model.Repository;
 import com.kw.arch.viewmodel.BaseViewModel;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
 /**
@@ -23,13 +26,16 @@ public class SourceAnnotate {
                 field.setAccessible(true);
                 Class<?> type = field.getType();
                 try {
-                    BaseDataSource dataSource = repository.getDataSource(type);
-                    if (dataSource == null) {
-                        if (BaseApplicationDataSource.class.isAssignableFrom(type)) {
-                            dataSource = repository.appendApplicationSource(type,
-                                    viewModel.getApplication());
-                        } else {
-                            dataSource = repository.appendSource(field.getType());
+                    BaseDataSource dataSource;
+                    Singleton singletonAnnotate = type.getAnnotation(Singleton.class);
+                    // 单例的DataSource都会存在仓库里，非单例的会在view生命周期结束后释放
+                    if (singletonAnnotate == null) {
+                        dataSource = createDateSource(type, viewModel.getApplication());
+                    } else {
+                        dataSource = repository.getDataSource(type);
+                        if (dataSource == null) {
+                            dataSource = createDateSource(type, viewModel.getApplication());
+                            repository.appendSource(type, dataSource);
                         }
                     }
                     field.set(viewModel, dataSource);
@@ -38,5 +44,20 @@ public class SourceAnnotate {
                 }
             }
         }
+    }
+
+    private static BaseDataSource createDateSource(Class<?> type, Application application) {
+        BaseDataSource dataSource = null;
+        try {
+            if (BaseApplicationDataSource.class.isAssignableFrom(type)) {
+                Constructor<?> constructor = type.getConstructor(Application.class);
+                dataSource = (BaseDataSource) constructor.newInstance(application);
+            } else {
+                dataSource = (BaseDataSource) type.newInstance();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return dataSource;
     }
 }
