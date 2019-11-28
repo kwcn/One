@@ -15,7 +15,7 @@ import com.kw.arch.model.impl.IRoom;
  * @author Kang Wei
  * @date 2019/10/30
  */
-public abstract class IRoomDataSource<P, T> extends BaseApplicationDataSource<P, T> implements IRoom<P, T> {
+public abstract class IRoomDataSource<P, T, Dao> extends BaseApplicationDataSource<P, T> implements IRoom<P, T, Dao> {
     private MutableLiveData<P> mRequest;
     private volatile Consumer<T> mCallBack;
 

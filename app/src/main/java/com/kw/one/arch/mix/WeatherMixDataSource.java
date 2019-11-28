@@ -20,7 +20,7 @@ import retrofit2.Call;
  * @date 2019/11/2
  */
 public class WeatherMixDataSource extends IRetrofitAndRoomDataSource<String, CurWeather,
-        WeatherEntity> {
+        WeatherEntity, WeatherDao> {
     private WeatherDao mDao;
 
     public WeatherMixDataSource(@NonNull Application application) {
@@ -61,17 +61,13 @@ public class WeatherMixDataSource extends IRetrofitAndRoomDataSource<String, Cur
     }
 
     @Override
-    public void insert(@NonNull WeatherEntity entity) {
-        mDao.insert(entity);
+    protected void insertToDb(@NonNull WeatherEntity dbData) {
+        mDao.insert(dbData);
     }
 
+    @NonNull
     @Override
-    public void delete(@NonNull WeatherEntity entity) {
-        mDao.delete(entity);
-    }
-
-    @Override
-    public void update(@NonNull WeatherEntity entity) {
-        mDao.update(entity);
+    public WeatherDao getDao() {
+        return mDao;
     }
 }

@@ -13,7 +13,7 @@ import com.kw.one.db.DBManager;
  * @author Kang Wei
  * @date 2019/10/30
  */
-public class WeatherRoomSource extends IRoomDataSource<String, WeatherEntity> {
+public class WeatherRoomSource extends IRoomDataSource<String, WeatherEntity, WeatherDao> {
     private WeatherDao mDao;
     public WeatherRoomSource(@NonNull Application application) {
         super(application);
@@ -27,18 +27,9 @@ public class WeatherRoomSource extends IRoomDataSource<String, WeatherEntity> {
         return mDao.query(param);
     }
 
+    @NonNull
     @Override
-    public void insert(@NonNull WeatherEntity weatherEntity) {
-        mDao.insert(weatherEntity);
-    }
-
-    @Override
-    public void delete(@NonNull WeatherEntity weatherEntity) {
-        mDao.delete(weatherEntity);
-    }
-
-    @Override
-    public void update(@NonNull WeatherEntity weatherEntity) {
-        mDao.update(weatherEntity);
+    public WeatherDao getDao() {
+        return mDao;
     }
 }

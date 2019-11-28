@@ -1,6 +1,7 @@
 package com.kw.one.ui;
 
 import android.icu.text.SimpleDateFormat;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 
@@ -8,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.kw.arch.aspect.CheckNet;
 import com.kw.arch.view.BaseFragment;
 import com.kw.one.R;
 import com.kw.one.databinding.FragmentHomeBinding;
@@ -86,7 +86,21 @@ public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBindin
             mMapHelper.putValue(CITY_KEY, city);
         });
 
-        mBinding.swipeRefresh.setOnRefreshListener(this::onReload);
+        mBinding.swipeRefresh.setOnRefreshListener(() -> {
+            startLoading(TASK_COUNT);
+            mWeather.onReload(null);
+            mCalendar.request().setValue(getCurTime());
+            mBus.request().setValue(isBus0Time() ? BusSource.bus_125_0_url :
+                    BusSource.bus_125_1_url);
+        });
+
+        setErrorReloadBtnOnClickListener(s -> {
+            startLoading(TASK_COUNT);
+            mWeather.onReload(null);
+            mCalendar.request().setValue(getCurTime());
+            mBus.request().setValue(isBus0Time() ? BusSource.bus_125_0_url :
+                    BusSource.bus_125_1_url);
+        });
     }
 
     @Override
@@ -97,15 +111,6 @@ public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBindin
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_home;
-    }
-
-    @CheckNet
-    @Override
-    protected void onReload() {
-        startLoading(TASK_COUNT);
-        mWeather.onReload(null);
-        mCalendar.request().setValue(getCurTime());
-        mBus.request().setValue(isBus0Time() ? BusSource.bus_125_0_url : BusSource.bus_125_1_url);
     }
 
     @Override
@@ -143,6 +148,9 @@ public class HomeFragment extends BaseFragment<HomeViewModel, FragmentHomeBindin
     }
 
     private String getCurTime() {
-        return new SimpleDateFormat("yyyyMMdd").format(new Date(System.currentTimeMillis()));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return new SimpleDateFormat("yyyyMMdd").format(new Date(System.currentTimeMillis()));
+        }
+        return null;
     }
 }

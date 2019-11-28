@@ -84,14 +84,25 @@ public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBindin
             WeatherEntity entity = new WeatherEntity();
             entity.address = CITY;
             entity.temp = System.currentTimeMillis() + "";
-            mRoomSource.update(entity);
+            mRoomSource.getDao().update(entity);
         });
 
         // 界面上的获取按钮
-        mBinding.fetch.setOnClickListener(v -> onReload());
+        mBinding.fetch.setOnClickListener(v -> {
+            startLoading(TASK_COUNT);
+            request();
+        });
 
         // 下拉刷新
-        mBinding.swipeRefresh.setOnRefreshListener(this::onReload);
+        mBinding.swipeRefresh.setOnRefreshListener(() -> {
+            startLoading(TASK_COUNT);
+            request();
+        });
+
+        setErrorReloadBtnOnClickListener(s -> {
+            startLoading(TASK_COUNT);
+            request();
+        });
     }
 
     // 设置网络状态检查
@@ -118,11 +129,5 @@ public class ArchFragment extends BaseFragment<ArchViewModel, FragmentArchBindin
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_arch;
-    }
-
-    @Override
-    protected void onReload() {
-        startLoading(TASK_COUNT);
-        request();
     }
 }

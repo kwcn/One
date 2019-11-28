@@ -18,8 +18,8 @@ import retrofit2.Response;
  * @author Kang Wei
  * @date 2019/11/2
  */
-public abstract class IRetrofitAndRoomDataSource<P, NetT, DbT> extends IDbAndNetDataSource<P,
-        NetT, DbT> implements IRetrofit<P, NetT>, IRoom<P, DbT> {
+public abstract class IRetrofitAndRoomDataSource<P, NetT, DbT, Dao> extends IDbAndNetDataSource<P,
+        NetT, DbT> implements IRetrofit<P, NetT>, IRoom<P, DbT, Dao> {
     public IRetrofitAndRoomDataSource(@NonNull Application application) {
         super(application);
     }
@@ -43,10 +43,5 @@ public abstract class IRetrofitAndRoomDataSource<P, NetT, DbT> extends IDbAndNet
     @Override
     protected LiveData<DbT> fromDb(@Nullable P request) {
         return query(request);
-    }
-
-    @Override
-    protected void insertToDb(@NonNull DbT dbData) {
-        insert(dbData);
     }
 }

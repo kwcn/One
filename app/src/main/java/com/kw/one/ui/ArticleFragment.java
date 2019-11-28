@@ -6,7 +6,6 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.kw.arch.aspect.CheckNet;
 import com.kw.arch.view.BaseFragment;
 import com.kw.arch.view.recycler.ItemController;
 import com.kw.arch.view.recycler.MultiTypeAdapter;
@@ -62,7 +61,15 @@ public class ArticleFragment extends BaseFragment<ArticleViewModel, FragmentArti
     }
 
     private void bindEvent() {
-        mBinding.swipeRefresh.setOnRefreshListener(this::onReload);
+        mBinding.swipeRefresh.setOnRefreshListener(() -> {
+            startLoading(TASK_COUNT);
+            mArticleSource.onReload(null);
+        });
+
+        setErrorReloadBtnOnClickListener(s -> {
+            startLoading(TASK_COUNT);
+            mArticleSource.onReload(null);
+        });
     }
 
     @Override
@@ -79,12 +86,5 @@ public class ArticleFragment extends BaseFragment<ArticleViewModel, FragmentArti
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_article_list;
-    }
-
-    @CheckNet
-    @Override
-    protected void onReload() {
-        startLoading(TASK_COUNT);
-        mArticleSource.onReload(null);
     }
 }
